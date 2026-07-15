@@ -9,7 +9,9 @@ possible, and every number it reports carries a simultaneous, anytime-valid
 
 The research programme, the survey of the 2021–2026 state of the art, and the
 three-approach design are laid out in [FOLLOW_UP_PROPOSAL.md](FOLLOW_UP_PROPOSAL.md).
-First empirical results on the synthetic testbed are in [RESULTS.md](RESULTS.md).
+Empirical results: synthetic testbed in [RESULTS.md](RESULTS.md); first
+real-LLM instruction attribution (exact 2^8 ground truth on qwen3.5-9b for
+$0.31 via OpenRouter) in [T1_RESULTS.md](T1_RESULTS.md).
 
 ## The three approaches
 
