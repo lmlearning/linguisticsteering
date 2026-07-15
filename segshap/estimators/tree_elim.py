@@ -57,6 +57,7 @@ def _owen_members(
     delta: float,
     rng: np.random.Generator,
     min_pairs_per_size: int = 3,
+    ci_method: str = "betting",
 ) -> ShapleyResult:
     members = list(groups[g_idx])
     k = len(members)
@@ -112,11 +113,14 @@ def _owen_members(
         except BudgetExceeded:
             break
 
+    lower, upper = est.intervals(method=ci_method)
     return ShapleyResult(
         values=est.values(),
-        halfwidths=est.halfwidths(),
+        halfwidths=(upper - lower) / 2.0,
         calls=spent(),
-        meta={"method": "owen_members", "group": g_idx},
+        meta={"method": "owen_members", "group": g_idx, "ci_method": ci_method},
+        lower_bounds=lower,
+        upper_bounds=upper,
     )
 
 
@@ -128,6 +132,7 @@ def hierarchical_owen(
     replicates: int = 1,
     delta: float = 0.05,
     stage1_frac: float = 0.35,
+    ci_method: str = "betting",
     rng: Optional[np.random.Generator | int] = None,
 ) -> HierarchicalResult:
     """Certified triage of a segment hierarchy under a total call budget.
@@ -146,6 +151,7 @@ def hierarchical_owen(
         budget_calls=int(budget_calls * stage1_frac),
         replicates=replicates,
         delta=delta / 2.0,
+        ci_method=ci_method,
         rng=rng,
     )
 
@@ -165,7 +171,8 @@ def hierarchical_owen(
             if sub_budget <= 2 * replicates:
                 continue
             res = _owen_members(
-                game, groups, g, sub_budget, replicates, per_group_delta, rng
+                game, groups, g, sub_budget, replicates, per_group_delta, rng,
+                ci_method=ci_method,
             )
             for local, player in enumerate(groups[g]):
                 member_values[player] = float(res.values[local])

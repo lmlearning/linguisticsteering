@@ -44,13 +44,21 @@ class ShapleyResult:
     halfwidths: np.ndarray
     calls: int
     meta: dict = field(default_factory=dict)
+    # Explicit interval endpoints (betting CIs are not centered on the point
+    # estimate). When absent, intervals are values +/- halfwidths.
+    lower_bounds: Optional[np.ndarray] = None
+    upper_bounds: Optional[np.ndarray] = None
 
     @property
     def lower(self) -> np.ndarray:
+        if self.lower_bounds is not None:
+            return self.lower_bounds
         return self.values - self.halfwidths
 
     @property
     def upper(self) -> np.ndarray:
+        if self.upper_bounds is not None:
+            return self.upper_bounds
         return self.values + self.halfwidths
 
 
@@ -62,6 +70,7 @@ def cc_shapley(
     target_eps: Optional[float] = None,
     min_pairs_per_size: int = 3,
     adaptive: bool = True,
+    ci_method: str = "betting",
     rng: Optional[np.random.Generator | int] = None,
 ) -> ShapleyResult:
     """Estimate all Shapley values of ``game`` with simultaneous (eps, delta) CIs.
@@ -143,14 +152,18 @@ def cc_shapley(
         except BudgetExceeded:
             break
 
+    lower, upper = est.intervals(method=ci_method)
     return ShapleyResult(
         values=est.values(),
-        halfwidths=est.halfwidths(),
+        halfwidths=(upper - lower) / 2.0,
         calls=spent(),
         meta={
             "method": "cc_bernstein",
             "delta": delta,
             "replicates": replicates,
+            "ci_method": ci_method,
             "pairs_per_size": pairs_per_size.tolist(),
         },
+        lower_bounds=lower,
+        upper_bounds=upper,
     )

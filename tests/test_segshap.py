@@ -157,3 +157,43 @@ def test_random_sparse_game_values_in_unit_interval():
 
 def test_kendall_tau_metric():
     assert kendall_tau(np.array([1.0, 2.0, 3.0]), np.array([10.0, 20.0, 30.0])) == 1.0
+
+
+def test_betting_interval_covers_and_beats_eb():
+    from segshap.bounds import betting_interval, eb_halfwidth
+
+    rng = np.random.default_rng(0)
+    misses, width_ratios = 0, []
+    true_mean = 0.15
+    for seed in range(20):
+        rng = np.random.default_rng(seed)
+        # CC-like samples in [-1, 1] with mean 0.15
+        x = np.clip(rng.normal(true_mean, 0.3, size=400), -1.0, 1.0)
+        lo, hi = betting_interval(x, -1.0, 1.0, delta=0.05)
+        if not (lo <= true_mean <= hi):
+            misses += 1
+        eb = eb_halfwidth(len(x), float(np.var(x, ddof=1)), 2.0, 0.05)
+        width_ratios.append((hi - lo) / (2 * eb))
+    assert misses <= 1  # anytime-valid at 95%, 20 trials
+    assert np.mean(width_ratios) < 0.7  # substantially tighter than EB
+
+
+def test_betting_interval_edge_cases():
+    from segshap.bounds import betting_interval
+
+    lo, hi = betting_interval([], -1.0, 1.0, delta=0.05)
+    assert (lo, hi) == (-1.0, 1.0)
+    lo, hi = betting_interval([0.3], -1.0, 1.0, delta=0.05)
+    assert -1.0 <= lo <= 0.3 <= hi <= 1.0
+
+
+def test_cc_shapley_betting_cis_tighter_than_eb():
+    game_a = make_game(noise="gauss", sigma=0.1, seed=3)
+    game_b = make_game(noise="gauss", sigma=0.1, seed=3)
+    truth = game_a.exact_shapley
+    res_bet = cc_shapley(game_a, budget_calls=4000, delta=0.05, ci_method="betting", rng=3)
+    res_eb = cc_shapley(game_b, budget_calls=4000, delta=0.05, ci_method="eb", rng=3)
+    assert ci_coverage(res_bet.lower, res_bet.upper, truth) == 1.0
+    assert np.mean(res_bet.upper - res_bet.lower) < 0.6 * np.mean(
+        res_eb.upper - res_eb.lower
+    )

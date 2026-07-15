@@ -135,6 +135,7 @@ def surrogate_shapley(
     replicates: int = 1,
     delta: float = 0.05,
     alpha: float = 1e-3,
+    ci_method: str = "betting",
     rng: Optional[np.random.Generator | int] = None,
 ) -> ShapleyResult:
     """phi(v) = phi(g) + CC-Bernstein estimate of phi(v - g), with valid CIs."""
@@ -158,6 +159,7 @@ def surrogate_shapley(
         budget_calls=remaining,
         replicates=replicates,
         delta=delta,
+        ci_method=ci_method,
         rng=rng,
     )
     return ShapleyResult(
@@ -171,4 +173,6 @@ def surrogate_shapley(
             "surrogate_shapley": surrogate.shapley.tolist(),
             "residual_meta": res.meta,
         },
+        lower_bounds=surrogate.shapley + res.lower,
+        upper_bounds=surrogate.shapley + res.upper,
     )
