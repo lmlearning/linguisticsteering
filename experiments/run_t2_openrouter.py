@@ -36,9 +36,9 @@ from segshap import cc_shapley, exact_shapley, hierarchical_owen, kernel_shap, p
 from segshap.llm import PromptSegmentGame, mmlu_style_render
 from segshap.metrics import ci_coverage, kendall_tau, linf_error, mean_ci_width
 
-MODEL = "qwen/qwen3.5-9b"
-PROVIDER_ORDER = ["deepinfra", "siliconflow"]
-CACHE_DIR = Path("cache/t2_qwen3.5-9b")
+DEFAULT_MODEL = "qwen/qwen3.5-9b"
+# Provider preference per model slug (None -> OpenRouter auto-routing).
+PROVIDER_ORDERS = {"qwen/qwen3.5-9b": ["deepinfra", "siliconflow"]}
 QUESTIONS_FILE = Path("experiments/t1_questions.json")
 N_QUESTIONS = 30
 
@@ -69,18 +69,22 @@ REPLICATES = 3
 TAU = 0.08
 
 
-def build_game(seed: int = 0) -> PromptSegmentGame:
+def model_slug(model: str) -> str:
+    return model.split("/")[-1]
+
+
+def build_game(model: str = DEFAULT_MODEL, seed: int = 0) -> PromptSegmentGame:
     questions = json.loads(QUESTIONS_FILE.read_text())[:N_QUESTIONS]
     return PromptSegmentGame.openrouter(
         [text for _, text in SEGMENTS],
         questions,
-        MODEL,
+        model,
         render=mmlu_style_render,
-        cache_dir=CACHE_DIR,
+        cache_dir=Path(f"cache/t2_{model_slug(model)}"),
         temperature=0.0,
         max_tokens=400,
         max_concurrency=64,
-        provider_order=PROVIDER_ORDER,
+        provider_order=PROVIDER_ORDERS.get(model),
         rng=seed,
     )
 
@@ -118,8 +122,12 @@ def exact_owen(v: dict, n: int, groups) -> np.ndarray:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out", type=Path, default=Path("results/t2_qwen3.5-9b.json"))
+    parser.add_argument("--model", type=str, default=DEFAULT_MODEL)
+    parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
+    model = args.model
+    slug = model_slug(model)
+    out_path = args.out or Path(f"results/t2_{slug}.json")
 
     n = len(SEGMENTS)
     names = [name for name, _ in SEGMENTS]
@@ -130,7 +138,7 @@ def main() -> None:
     ]
 
     # ---- Phase 1: exhaustive 4096 x 30 grid.
-    game = build_game()
+    game = build_game(model)
     t0 = time.time()
     matrix = game.prime_grid(all_coalitions)
     grid_seconds = time.time() - t0
@@ -174,7 +182,7 @@ def main() -> None:
     for seed in range(8):
         for budget in BUDGETS:
             for est_name, fn in estimators.items():
-                g = build_game(seed=2000 + seed)
+                g = build_game(model, seed=2000 + seed)
                 res = fn(g, budget, seed)
                 has_ci = bool(np.all(np.isfinite(res.halfwidths)))
                 rows.append(
@@ -198,7 +206,7 @@ def main() -> None:
     # ---- Phase 3: hierarchical triage on the real game (replayed).
     hier_rows = []
     for seed in range(8):
-        g = build_game(seed=3000 + seed)
+        g = build_game(model, seed=3000 + seed)
         res = hierarchical_owen(
             g, GROUPS, budget_calls=200_000, tau=TAU, replicates=2, delta=DELTA, rng=seed
         )
@@ -220,11 +228,11 @@ def main() -> None:
         )
         print(f"hierarchical seeds done: {seed + 1}/8", flush=True)
 
-    args.out.parent.mkdir(exist_ok=True)
-    args.out.write_text(
+    out_path.parent.mkdir(exist_ok=True)
+    out_path.write_text(
         json.dumps(
             {
-                "model": MODEL,
+                "model": model,
                 "segments": dict(SEGMENTS),
                 "groups": {gn: [names[p] for p in g] for gn, g in zip(GROUP_NAMES, GROUPS)},
                 "n_questions": N_QUESTIONS,
@@ -248,7 +256,7 @@ def main() -> None:
     lines = [
         "# T2 results: 12-instruction attribution with hierarchy on a real LLM",
         "",
-        f"Model: `{MODEL}` via OpenRouter (reasoning disabled, temperature 0). "
+        f"Model: `{model}` via OpenRouter (reasoning disabled, temperature 0). "
         f"12 instruction segments in 4 groups x {N_QUESTIONS} MMLU questions; exhaustive "
         f"2^12 = 4,096-coalition grid ({grid_calls} calls, ${grid_cost:.2f}, "
         f"{grid_seconds/60:.0f} min) gives exact Shapley, Owen, and interaction ground truth.",
@@ -319,7 +327,7 @@ def main() -> None:
         "Reproduce: `OPENROUTER_API_KEY=... python3 experiments/run_t2_openrouter.py`.",
         "",
     ]
-    Path("T2_RESULTS.md").write_text("\n".join(lines))
+    Path(f"T2_RESULTS_{slug}.md" if model != DEFAULT_MODEL else "T2_RESULTS.md").write_text("\n".join(lines))
     print("\n".join(lines))
 
 
