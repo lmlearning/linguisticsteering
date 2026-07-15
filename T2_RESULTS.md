@@ -1,6 +1,6 @@
 # T2 results: 12-instruction attribution with hierarchy on a real LLM
 
-Model: `qwen/qwen3.5-9b` via OpenRouter (reasoning disabled, temperature 0). 12 instruction segments in 4 groups x 30 MMLU questions; exhaustive 2^12 = 4,096-coalition grid (98880 calls, $4.10, 127 min) gives exact Shapley, Owen, and interaction ground truth.
+Model: `qwen/qwen3.5-9b` via OpenRouter (reasoning disabled, temperature 0). 12 instruction segments in 4 groups x 30 MMLU questions; exhaustive 2^12 = 4,096-coalition grid (0 calls, $0.00, 0 min) gives exact Shapley, Owen, and interaction ground truth.
 
 Accuracy with no segments: 0.633; with all twelve: 0.767.
 
@@ -41,23 +41,23 @@ Top-5 pairwise Mobius interactions:
 |---|---|---|---|---|---|
 | 3000 | permutation_mc | 0.0780 | 0.455 | 1.00 | 1.2502 |
 | 3000 | kernel_shap | 0.0583 | 0.678 | n/a | n/a |
-| 3000 | cc_bernstein | 0.0488 | 0.629 | 1.00 | 6.4998 |
-| 3000 | surrogate_cc | 0.0572 | 0.598 | 1.00 | 17.2476 |
+| 3000 | cc_bernstein | 0.0488 | 0.629 | 1.00 | 0.8519 |
+| 3000 | surrogate_cc | 0.0572 | 0.598 | 1.00 | 1.9369 |
 | 10000 | permutation_mc | 0.0446 | 0.583 | 1.00 | 0.7346 |
 | 10000 | kernel_shap | 0.0364 | 0.818 | n/a | n/a |
-| 10000 | cc_bernstein | 0.0263 | 0.803 | 1.00 | 2.3019 |
-| 10000 | surrogate_cc | 0.0276 | 0.822 | 1.00 | 4.4962 |
+| 10000 | cc_bernstein | 0.0263 | 0.803 | 1.00 | 0.4129 |
+| 10000 | surrogate_cc | 0.0276 | 0.822 | 1.00 | 0.7089 |
 | 30000 | permutation_mc | 0.0275 | 0.780 | 1.00 | 0.4500 |
 | 30000 | kernel_shap | 0.0289 | 0.905 | n/a | n/a |
-| 30000 | cc_bernstein | 0.0109 | 0.920 | 1.00 | 0.9588 |
-| 30000 | surrogate_cc | 0.0151 | 0.894 | 1.00 | 1.6451 |
+| 30000 | cc_bernstein | 0.0109 | 0.920 | 1.00 | 0.2208 |
+| 30000 | surrogate_cc | 0.0151 | 0.894 | 1.00 | 0.3008 |
 
 ## Hierarchical triage (TreeSHAP-Elim, tau = 0.08, 200k replayed calls, 8 seeds)
 
-- 'junk' group certified negligible in 0% of runs
+- 'junk' group certified negligible in 75% of runs
 - false eliminations (true |group value| > tau certified anyway): 0
 - member Owen CIs cover exact Owen values: 100% of runs
 
-Total new spend for T2: $4.10 (everything after the grid replays the cache).
+Total new spend for T2: $0.00 (everything after the grid replays the cache).
 
 Reproduce: `OPENROUTER_API_KEY=... python3 experiments/run_t2_openrouter.py`.
