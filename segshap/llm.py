@@ -98,6 +98,9 @@ class PromptSegmentGame(NoisyGame):
         cache_dir: Optional[Path] = None,
         temperature: float = 0.0,
         max_concurrency: int = 8,
+        max_tokens: Optional[int] = None,
+        extra_body: Optional[dict] = None,
+        max_retries: int = 4,
         rng=None,
         budget: Optional[int] = None,
     ):
@@ -109,15 +112,54 @@ class PromptSegmentGame(NoisyGame):
         self.utility = utility
         self.temperature = temperature
         self.max_concurrency = max_concurrency
+        self.max_tokens = max_tokens
+        # Provider-specific request extras (e.g. OpenRouter's reasoning /
+        # usage / provider-routing controls) passed through on every call.
+        self.extra_body = extra_body
+        self.max_retries = max_retries
         self.cache_dir = Path(cache_dir) if cache_dir else None
         if self.cache_dir:
             self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.usage = TokenUsage()
+        self.total_cost = 0.0  # accumulated provider-reported spend (USD)
         if client is None:
             from openai import AsyncOpenAI
 
             client = AsyncOpenAI()
         self.client = client
+
+    @classmethod
+    def openrouter(
+        cls,
+        *args,
+        api_key: Optional[str] = None,
+        provider_order: Optional[Sequence[str]] = None,
+        reasoning_enabled: bool = False,
+        **kwargs,
+    ) -> "PromptSegmentGame":
+        """Construct against OpenRouter with sane experiment defaults:
+        reasoning disabled (current open-weights defaults think otherwise and
+        multiply output cost), per-call cost reporting, and optional provider
+        preference for cache/quantization consistency."""
+        import os
+
+        from openai import AsyncOpenAI
+
+        client = AsyncOpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=api_key or os.environ["OPENROUTER_API_KEY"],
+        )
+        extra_body: dict = {
+            "reasoning": {"enabled": reasoning_enabled},
+            "usage": {"include": True},
+        }
+        if provider_order:
+            extra_body["provider"] = {
+                "order": list(provider_order),
+                "allow_fallbacks": True,
+            }
+        kwargs.setdefault("extra_body", extra_body)
+        return cls(*args, client=client, **kwargs)
 
     def _cache_key(self, coalition: Coalition, q_idx: int, rep: int) -> str:
         payload = json.dumps(
@@ -130,11 +172,28 @@ class PromptSegmentGame(NoisyGame):
         return self.cache_dir / f"{key}.json" if self.cache_dir else None
 
     async def _one_call(self, prompt: str, semaphore: asyncio.Semaphore) -> tuple[str, dict]:
-        async with semaphore:
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=self.temperature,
+        last_err: Optional[Exception] = None
+        for attempt in range(self.max_retries):
+            try:
+                async with semaphore:
+                    kwargs: dict = {}
+                    if self.max_tokens is not None:
+                        kwargs["max_tokens"] = self.max_tokens
+                    if self.extra_body is not None:
+                        kwargs["extra_body"] = self.extra_body
+                    response = await self.client.chat.completions.create(
+                        model=self.model,
+                        messages=[{"role": "user", "content": prompt}],
+                        temperature=self.temperature,
+                        **kwargs,
+                    )
+                break
+            except Exception as err:  # rate limits, transient 5xx, timeouts
+                last_err = err
+                await asyncio.sleep(2.0 ** (attempt + 1))
+        else:
+            raise RuntimeError(
+                f"LLM call failed after {self.max_retries} attempts: {last_err}"
             )
         usage = getattr(response, "usage", None)
         cached = 0
@@ -145,8 +204,38 @@ class PromptSegmentGame(NoisyGame):
             "prompt": getattr(usage, "prompt_tokens", 0) or 0,
             "cached": cached,
             "completion": getattr(usage, "completion_tokens", 0) or 0,
+            "cost": float(getattr(usage, "cost", 0.0) or 0.0),
         }
         return response.choices[0].message.content or "", usage_dict
+
+    def _fetch_and_cache(
+        self, jobs: list, concurrency: Optional[int] = None
+    ) -> dict:
+        """Fetch (prompt, q_idx, key) jobs concurrently, cache, return key->text.
+
+        Duplicate keys within one batch are fetched once.
+        """
+        unique: dict[str, tuple[str, int]] = {}
+        for prompt, q_idx, key in jobs:
+            unique.setdefault(key, (prompt, q_idx))
+
+        async def run_batch():
+            semaphore = asyncio.Semaphore(concurrency or self.max_concurrency)
+            tasks = [
+                self._one_call(prompt, semaphore) for prompt, _ in unique.values()
+            ]
+            return await asyncio.gather(*tasks)
+
+        responses = asyncio.run(run_batch())
+        out: dict[str, str] = {}
+        for (key, _), (text, usage) in zip(unique.items(), responses):
+            self.usage.add(usage["prompt"], usage["cached"], usage["completion"])
+            self.total_cost += usage["cost"]
+            path = self._cache_path(key)
+            if path is not None:
+                path.write_text(json.dumps({"response": text, "usage": usage}))
+            out[key] = text
+        return out
 
     def _sample(self, coalition: Coalition, replicates: int) -> np.ndarray:
         present = [seg for idx, seg in enumerate(self.segments) if idx in coalition]
@@ -166,26 +255,68 @@ class PromptSegmentGame(NoisyGame):
                 to_fetch.append((slot, q_idx, key))
 
         if to_fetch:
-
-            async def run_batch():
-                semaphore = asyncio.Semaphore(self.max_concurrency)
-                tasks = [
-                    self._one_call(
-                        self.render(present, self.questions[q_idx]), semaphore
-                    )
-                    for _, q_idx, _ in to_fetch
+            fetched = self._fetch_and_cache(
+                [
+                    (self.render(present, self.questions[q_idx]), q_idx, key)
+                    for _, q_idx, key in to_fetch
                 ]
-                return await asyncio.gather(*tasks)
-
-            responses = asyncio.run(run_batch())
-            for (slot, q_idx, key), (text, usage) in zip(to_fetch, responses):
-                self.usage.add(usage["prompt"], usage["cached"], usage["completion"])
-                path = self._cache_path(key)
-                if path is not None:
-                    path.write_text(json.dumps({"response": text, "usage": usage}))
-                results[slot] = self.utility(text, self.questions[q_idx])
+            )
+            for slot, q_idx, key in to_fetch:
+                results[slot] = self.utility(fetched[key], self.questions[q_idx])
 
         return np.array(results, dtype=float)
+
+    def prime_grid(
+        self,
+        coalitions: Sequence[Iterable[int]],
+        question_indices: Optional[Sequence[int]] = None,
+        concurrency: Optional[int] = None,
+    ) -> np.ndarray:
+        """Evaluate every (coalition, question) pair once at temperature 0.
+
+        Returns the utility matrix (len(coalitions) x len(questions)). Rows
+        averaged give the *exact* population utility v(S) over the fixed
+        question set, so exhaustive enumeration of coalitions yields exact
+        Shapley ground truth on a real LLM. All responses land in the disk
+        cache, making subsequent estimator runs free — the shared-cache
+        optimization from the proposal.
+
+        Only usable at temperature 0 (deterministic replicate key).
+        """
+        if self.temperature > 0:
+            raise ValueError("prime_grid requires temperature 0")
+        if self.cache_dir is None:
+            raise ValueError("prime_grid requires a cache_dir")
+        q_indices = (
+            list(question_indices)
+            if question_indices is not None
+            else list(range(len(self.questions)))
+        )
+        coalition_sets = [frozenset(c) for c in coalitions]
+
+        jobs = []
+        for s in coalition_sets:
+            present = [seg for idx, seg in enumerate(self.segments) if idx in s]
+            for q_idx in q_indices:
+                key = self._cache_key(s, q_idx, 0)
+                path = self._cache_path(key)
+                if path is None or not path.exists():
+                    jobs.append(
+                        (self.render(present, self.questions[q_idx]), q_idx, key)
+                    )
+        if jobs:
+            self.calls += len(jobs)
+            self._fetch_and_cache(jobs, concurrency=concurrency)
+
+        matrix = np.zeros((len(coalition_sets), len(q_indices)))
+        for row, s in enumerate(coalition_sets):
+            for col, q_idx in enumerate(q_indices):
+                path = self._cache_path(self._cache_key(s, q_idx, 0))
+                cached = json.loads(path.read_text())
+                matrix[row, col] = self.utility(
+                    cached["response"], self.questions[q_idx]
+                )
+        return matrix
 
 
 def mmlu_style_render(present_segments: Sequence[str], question: dict) -> str:
