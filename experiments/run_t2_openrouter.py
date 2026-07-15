@@ -79,7 +79,7 @@ def build_game(seed: int = 0) -> PromptSegmentGame:
         cache_dir=CACHE_DIR,
         temperature=0.0,
         max_tokens=400,
-        max_concurrency=32,
+        max_concurrency=64,
         provider_order=PROVIDER_ORDER,
         rng=seed,
     )
