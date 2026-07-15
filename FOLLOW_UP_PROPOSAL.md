@@ -6,32 +6,26 @@
 
 ---
 
-## 1. Motivation and relation to the current project
+## 1. Motivation
 
-The current project (`estimate_importance.py` and companions) measures how individual
-adjectives injected into an MMLU/ARC prompt instruction ("Your answer should be
-{adjectives}…") steer answer accuracy, using a KernelSHAP-style estimator over ~200
-sampled coalitions per question, across several API models.
+This project is inspired by an earlier study in this repository (linguistic steering:
+KernelSHAP-style attribution of single adjectives injected into MMLU/ARC prompts), but
+stands on its own. The question it answers is the one prompt engineering actually asks:
 
-Three limitations motivate the follow-up:
+**How much does each *segment* of a prompt — an instruction in a system prompt, a
+few-shot example, a persona block, a retrieved document, a safety clause — contribute to
+end-task quality, accounting for its interactions with the other segments?**
 
-1. **Granularity.** Players are single adjectives. The practically important question is
-   about *segments*: whole instructions in a system prompt, few-shot examples, persona
-   blocks, retrieved documents, safety clauses. "How much does instruction #3 contribute
-   to end-task quality, accounting for its interactions with the other instructions?" is
-   exactly a group-level Shapley question, and answering it enables principled prompt
-   compression, instruction debugging, and redundancy/conflict detection.
-2. **Cost.** ~200 LLM calls per question per model is the dominant expense, and the
-   number 200 is arbitrary: there is no stopping rule, no error bar on any Shapley value,
-   and no way to know if 50 calls would have sufficed or 500 were needed.
-3. **Statistical soundness.** The coalition sampler draws a uniform size then a uniform
-   subset, which is *not* the Shapley-kernel distribution the weighted regression
-   assumes; the value function is a single binary correctness draw (maximally noisy); and
-   no guarantee connects the regression output to the true Shapley values.
+That is a group-level Shapley question, and answering it well enables principled prompt
+compression, instruction debugging, and redundancy/conflict detection. Existing practice
+(including the inspiring study) shares two failures: attribution budgets are arbitrary
+(hundreds of LLM calls with no stopping rule and no error bar, so there is no way to know
+whether a tenth of the budget would have sufficed or ten times more was needed), and the
+estimators carry no guarantee connecting their output to the true Shapley values —
+especially when the utility is a single noisy binary-correctness draw.
 
-The follow-up keeps the core idea — Shapley values of prompt components with respect to a
-task-quality utility — and rebuilds it around two goals the current state of the art does
-not deliver together: **minimal query cost** and **provable error bounds**.
+The project therefore targets two goals the current state of the art does not deliver
+together: **minimal query cost** and **provable error bounds**.
 
 ## 2. What the state of the art does and does not cover (survey summary)
 
@@ -142,7 +136,7 @@ permutation sampling.
    replicates shrink σ²(S)/r, coalition sampling shrinks stratum error, and one anytime-
    valid confidence sequence per segment covers both. Yields the first certificate of the
    form "with prob. ≥ 0.95, instruction 3 contributes between −0.1 and +0.4 accuracy
-   points" — and a principled stopping rule replacing the current repo's fixed 200 calls.
+   points" — and a principled stopping rule instead of a fixed, arbitrary call budget.
 2. *Optimal (coalitions × replicates) allocation.* Closed-form Neyman-style split of a
    token budget between new coalitions and replicates, using pilot estimates of the
    variance decomposition; adaptive re-allocation as strata concentrate.
@@ -251,9 +245,9 @@ what makes a single experimental design possible.
 
 ## 5. Shared experimental design
 
-One harness, three plug-in estimators, common baselines and metrics. The harness
-generalizes `estimate_importance.py`: a `CoalitionOracle` abstraction (provider-agnostic
-async API layer reused from the current repo) exposing `evaluate(S, r)` → r utility
+One harness, three plug-in estimators, common baselines and metrics. The harness is
+built around a `CoalitionOracle` abstraction (provider-agnostic
+API layer) exposing `evaluate(S, r)` → r utility
 samples + token-cost accounting, with response caching keyed by (coalition, question,
 seed) so every method sees identical randomness where possible (common random numbers —
 itself a variance-reduction and a fairness guarantee for method comparison).
@@ -262,10 +256,10 @@ itself a variance-reduction and a fairness guarantee for method comparison).
 
 - **T0 — Synthetic games** (free oracle): random k-additive games, calibrated noise;
   validates bounds exactly (coverage of CIs, tightness vs. theory).
-- **T1 — Legacy continuity: 8 adjectives × MMLU/ARC** (this repo's setting). n = 8 ⇒
-  exhaustive 2⁸ = 256 coalitions with heavy replication gives *exact-up-to-noise ground
-  truth*, and directly re-answers the original project's question with error bars.
-  Backwards comparison: how wrong / how overconfident was the original estimator?
+- **T1 — Small-n LLM testbed: 8 single-token segments × MMLU/ARC** (an
+  adjective-injection setting in the spirit of the inspiring study). n = 8 ⇒ exhaustive
+  2⁸ = 256 coalitions with heavy replication gives *exact-up-to-noise ground truth* on a
+  real LLM utility — the cheapest possible real-model validation of the certificates.
 - **T2 — Instruction attribution** (the headline setting): system prompts with n = 10–20
   heterogeneous instructions (format constraints, persona, chain-of-thought triggers,
   safety clauses, redundant duplicates and *deliberately conflicting pairs* planted as
@@ -276,9 +270,8 @@ itself a variance-reduction and a fairness guarantee for method comparison).
   retrieved-document segments (comparability with ContextCite/Cluster Shapley); a
   50-template prompt library with shared instruction types (for C's amortization).
 
-**Baselines:** permutation MC (Castro), stratified Castro-2017, KernelSHAP as implemented
-in the current repo (including its off-distribution sampler, as an ablation), unbiased
-KernelSHAP + paired sampling (Covert & Lee), Leverage SHAP, SVARM, ContextCite weights,
+**Baselines:** permutation MC (Castro), stratified Castro-2017, unbiased KernelSHAP +
+paired sampling (Covert & Lee), Leverage SHAP, SVARM, ContextCite weights,
 LOO/AttriBoT-style, ProCut-style pruning.
 
 **Metrics (identical across approaches — this is the shared design):**
@@ -299,7 +292,7 @@ LOO/AttriBoT-style, ProCut-style pruning.
    deltas).
 
 **Shared infrastructure quirks worth stating up front:** all randomness seeded and
-logged (the current repo's resume-from-JSON pattern, generalized); every LLM response
+logged, with resumable runs; every LLM response
 cached to disk so that *no experiment is ever paid for twice* — across methods, the
 cache is itself the biggest operation-count optimization; judge prompts and eval sets
 version-pinned.
