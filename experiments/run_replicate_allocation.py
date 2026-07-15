@@ -173,6 +173,11 @@ def main() -> None:
             )
     lines += [
         "",
+        "## Conclusions",
+        "",
+        "(See REPLICATE_ALLOCATION.md as committed for the run-specific "
+        "conclusions; regenerate tables with this script.)",
+        "",
         "Raw rows: `results/replicate_allocation.json`. "
         "Reproduce: `python3 experiments/run_replicate_allocation.py` "
         "(requires both T2 caches).",
