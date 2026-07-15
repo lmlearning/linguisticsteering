@@ -73,6 +73,9 @@ class TokenUsage:
         return self.prompt_tokens - self.cached_tokens
 
 
+_UTILITY_MEMOS: dict = {}  # cache_dir -> {cache_key: utility}
+
+
 class PromptSegmentGame(NoisyGame):
     """v(S) = E_q [ utility(LLM(render(S), q), q) ] via an OpenAI-compatible API.
 
@@ -122,6 +125,15 @@ class PromptSegmentGame(NoisyGame):
             self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.usage = TokenUsage()
         self.total_cost = 0.0  # accumulated provider-reported spend (USD)
+        # At temperature 0 the (coalition, question) -> utility map is
+        # deterministic, so replayed runs can skip disk entirely. The memo is
+        # shared across instances pointing at the same cache directory (cache
+        # keys already encode model/temperature), so repeated estimator runs
+        # over a primed grid replay from memory.
+        if self.cache_dir is not None:
+            self._utility_memo = _UTILITY_MEMOS.setdefault(str(self.cache_dir), {})
+        else:
+            self._utility_memo = {}
         if client is None:
             from openai import AsyncOpenAI
 
@@ -247,10 +259,16 @@ class PromptSegmentGame(NoisyGame):
             q_idx = int(q_idx)
             rep_nonce = int(self.rng.integers(0, 2**31)) if self.temperature > 0 else 0
             key = self._cache_key(coalition, q_idx, rep_nonce)
+            if self.temperature == 0 and key in self._utility_memo:
+                results[slot] = self._utility_memo[key]
+                continue
             path = self._cache_path(key)
             if path is not None and path.exists():
                 cached = json.loads(path.read_text())
-                results[slot] = self.utility(cached["response"], self.questions[q_idx])
+                score = self.utility(cached["response"], self.questions[q_idx])
+                if self.temperature == 0:
+                    self._utility_memo[key] = score
+                results[slot] = score
             else:
                 to_fetch.append((slot, q_idx, key))
 
@@ -262,7 +280,10 @@ class PromptSegmentGame(NoisyGame):
                 ]
             )
             for slot, q_idx, key in to_fetch:
-                results[slot] = self.utility(fetched[key], self.questions[q_idx])
+                score = self.utility(fetched[key], self.questions[q_idx])
+                if self.temperature == 0:
+                    self._utility_memo[key] = score
+                results[slot] = score
 
         return np.array(results, dtype=float)
 
@@ -304,18 +325,31 @@ class PromptSegmentGame(NoisyGame):
                     jobs.append(
                         (self.render(present, self.questions[q_idx]), q_idx, key)
                     )
-        if jobs:
-            self.calls += len(jobs)
-            self._fetch_and_cache(jobs, concurrency=concurrency)
+        # Fetch in chunks: bounds asyncio task fan-out, gives resumable
+        # progress (each chunk lands in the disk cache before the next
+        # starts), and produces periodic progress/cost lines on long grids.
+        chunk_size = 4_000
+        for start in range(0, len(jobs), chunk_size):
+            chunk = jobs[start : start + chunk_size]
+            self.calls += len(chunk)
+            self._fetch_and_cache(chunk, concurrency=concurrency)
+            done = min(start + chunk_size, len(jobs))
+            print(
+                f"prime_grid: {done}/{len(jobs)} calls, ${self.total_cost:.3f} spent",
+                flush=True,
+            )
 
         matrix = np.zeros((len(coalition_sets), len(q_indices)))
         for row, s in enumerate(coalition_sets):
             for col, q_idx in enumerate(q_indices):
-                path = self._cache_path(self._cache_key(s, q_idx, 0))
-                cached = json.loads(path.read_text())
-                matrix[row, col] = self.utility(
-                    cached["response"], self.questions[q_idx]
-                )
+                key = self._cache_key(s, q_idx, 0)
+                if key in self._utility_memo:
+                    matrix[row, col] = self._utility_memo[key]
+                    continue
+                cached = json.loads(self._cache_path(key).read_text())
+                score = self.utility(cached["response"], self.questions[q_idx])
+                self._utility_memo[key] = score
+                matrix[row, col] = score
         return matrix
 
 
