@@ -27,14 +27,20 @@ CC-Bernstein at 8,000 oracle calls, simultaneous 95% CIs:
 | 1000 | kernel_shap | 0.0846 | 0.543 | n/a | n/a |
 | 1000 | cc_bernstein | 0.0846 | 0.457 | 1.00 | 1.2183 |
 | 1000 | surrogate_cc | 0.0752 | 0.500 | 1.00 | 3.1900 |
+| 1000 | leverage_shap | 0.1287 | 0.436 | n/a | n/a |
+| 1000 | svarm | 0.1224 | 0.350 | n/a | n/a |
 | 3000 | permutation_mc | 0.0592 | 0.498 | 1.00 | 1.0465 |
 | 3000 | kernel_shap | 0.0693 | 0.486 | n/a | n/a |
 | 3000 | cc_bernstein | 0.0341 | 0.693 | 1.00 | 0.6768 |
 | 3000 | surrogate_cc | 0.0384 | 0.514 | 1.00 | 1.3039 |
+| 3000 | leverage_shap | 0.0568 | 0.479 | n/a | n/a |
+| 3000 | svarm | 0.0556 | 0.457 | n/a | n/a |
 | 8000 | permutation_mc | 0.0339 | 0.593 | 1.00 | 0.6809 |
 | 8000 | kernel_shap | 0.0569 | 0.707 | n/a | n/a |
 | 8000 | cc_bernstein | 0.0250 | 0.771 | 1.00 | 0.3880 |
 | 8000 | surrogate_cc | 0.0252 | 0.729 | 1.00 | 0.5835 |
+| 8000 | leverage_shap | 0.0382 | 0.643 | n/a | n/a |
+| 8000 | svarm | 0.0403 | 0.636 | n/a | n/a |
 
 Total spend for everything above: $0.00. All estimator runs replay the cached grid responses, so they cost nothing beyond the grid — the shared-cache design at work.
 

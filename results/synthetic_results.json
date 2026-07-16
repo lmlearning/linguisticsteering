@@ -52,6 +52,30 @@
         },
         {
           "seed": 0,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.1947996497270414,
+          "l2": 0.3153039987629131,
+          "kendall": 0.5757575757575757,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.17804299143768498,
+          "l2": 0.3028248379035021,
+          "kendall": 0.4545454545454545,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -97,6 +121,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.7725822354175111
+        },
+        {
+          "seed": 0,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.18617294199759993,
+          "l2": 0.3039624988706733,
+          "kendall": 0.606060606060606,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.16520475763483908,
+          "l2": 0.29038572581154415,
+          "kendall": 0.4545454545454545,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 0,
@@ -148,6 +196,30 @@
         },
         {
           "seed": 0,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.12064627757513999,
+          "l2": 0.24795185915049522,
+          "kendall": 0.7575757575757575,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.15838614596182288,
+          "l2": 0.28038505829831956,
+          "kendall": 0.5757575757575757,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -193,6 +265,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.28944099632428527
+        },
+        {
+          "seed": 0,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.08335145539984895,
+          "l2": 0.13375785366308962,
+          "kendall": 0.909090909090909,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.07572593210154797,
+          "l2": 0.11108921791696255,
+          "kendall": 0.909090909090909,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 1,
@@ -244,6 +340,30 @@
         },
         {
           "seed": 1,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.12874720280412572,
+          "l2": 0.24891981187120668,
+          "kendall": 0.6363636363636362,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.1496774545067195,
+          "l2": 0.2621356843085439,
+          "kendall": 0.6666666666666666,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -289,6 +409,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.7892222728840835
+        },
+        {
+          "seed": 1,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.13555654167249917,
+          "l2": 0.2523033285064846,
+          "kendall": 0.6969696969696969,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.12098222709818379,
+          "l2": 0.2523304994543037,
+          "kendall": 0.6969696969696969,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 1,
@@ -340,6 +484,30 @@
         },
         {
           "seed": 1,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.1400467238299329,
+          "l2": 0.32976306553437323,
+          "kendall": 0.7272727272727272,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.1487760187573743,
+          "l2": 0.330795976154668,
+          "kendall": 0.6969696969696969,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -385,6 +553,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.27237050987744865
+        },
+        {
+          "seed": 1,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.04866981728577524,
+          "l2": 0.08664399521841534,
+          "kendall": 0.909090909090909,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.03724545012807205,
+          "l2": 0.08197388033145463,
+          "kendall": 0.7575757575757575,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 2,
@@ -436,6 +628,30 @@
         },
         {
           "seed": 2,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.14115428207139705,
+          "l2": 0.20461165947111776,
+          "kendall": 0.5757575757575757,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.12793711521287077,
+          "l2": 0.21704905313276587,
+          "kendall": 0.606060606060606,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -481,6 +697,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.7284237272851787
+        },
+        {
+          "seed": 2,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.14830581380414282,
+          "l2": 0.19354655925829853,
+          "kendall": 0.6363636363636362,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.11865149222026221,
+          "l2": 0.22764114800173538,
+          "kendall": 0.606060606060606,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 2,
@@ -532,6 +772,30 @@
         },
         {
           "seed": 2,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.118313736059586,
+          "l2": 0.2149591126563224,
+          "kendall": 0.6363636363636362,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.11794717912327579,
+          "l2": 0.18526382076049852,
+          "kendall": 0.6363636363636362,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -577,6 +841,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.29006509047411616
+        },
+        {
+          "seed": 2,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.052712338781108606,
+          "l2": 0.08783762177324832,
+          "kendall": 0.909090909090909,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.04634250235823605,
+          "l2": 0.09747869505849155,
+          "kendall": 0.7878787878787877,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 3,
@@ -628,6 +916,30 @@
         },
         {
           "seed": 3,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.1018545538239306,
+          "l2": 0.1916045067119417,
+          "kendall": 0.4545454545454545,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.13260860443666578,
+          "l2": 0.25926529832706907,
+          "kendall": 0.606060606060606,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -673,6 +985,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.7659366992541865
+        },
+        {
+          "seed": 3,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.11963675099304492,
+          "l2": 0.2030459175084418,
+          "kendall": 0.4848484848484848,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.1393462004295172,
+          "l2": 0.26984395358669067,
+          "kendall": 0.606060606060606,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 3,
@@ -724,6 +1060,30 @@
         },
         {
           "seed": 3,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.09301961183536078,
+          "l2": 0.18624425383736415,
+          "kendall": 0.6666666666666666,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.1035174473331964,
+          "l2": 0.15781997983202609,
+          "kendall": 0.7878787878787877,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -769,6 +1129,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.2846985110311147
+        },
+        {
+          "seed": 3,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.08665214300843718,
+          "l2": 0.21773078061500659,
+          "kendall": 0.8484848484848484,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.11402107037736431,
+          "l2": 0.229761665257391,
+          "kendall": 0.7878787878787877,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 4,
@@ -820,6 +1204,30 @@
         },
         {
           "seed": 4,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.1258616890509927,
+          "l2": 0.2535973321438541,
+          "kendall": 0.4848484848484848,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.13345948799601554,
+          "l2": 0.2398142960039422,
+          "kendall": 0.7575757575757575,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -865,6 +1273,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.7825727700735148
+        },
+        {
+          "seed": 4,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.1179625436118446,
+          "l2": 0.2301531555511143,
+          "kendall": 0.5757575757575757,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.11592535526378608,
+          "l2": 0.23986710388824736,
+          "kendall": 0.7272727272727272,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 4,
@@ -916,6 +1348,30 @@
         },
         {
           "seed": 4,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.08327036971574024,
+          "l2": 0.14894049005802612,
+          "kendall": 0.7575757575757575,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.04925501483631653,
+          "l2": 0.09254174202188602,
+          "kendall": 0.8181818181818181,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -961,6 +1417,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.28572329963519866
+        },
+        {
+          "seed": 4,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.06974450416320235,
+          "l2": 0.09635694674927239,
+          "kendall": 0.8181818181818181,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.04909995636484832,
+          "l2": 0.07191963989773036,
+          "kendall": 0.8181818181818181,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 5,
@@ -1012,6 +1492,30 @@
         },
         {
           "seed": 5,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.11996731156374665,
+          "l2": 0.22453392142592857,
+          "kendall": 0.5454545454545454,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.1021462532243432,
+          "l2": 0.22278464535111656,
+          "kendall": 0.7575757575757575,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -1057,6 +1561,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.7877727572939702
+        },
+        {
+          "seed": 5,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.12221997088480838,
+          "l2": 0.23581381432563947,
+          "kendall": 0.5151515151515151,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.10507209888241031,
+          "l2": 0.23275356323620036,
+          "kendall": 0.6363636363636362,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 5,
@@ -1108,6 +1636,30 @@
         },
         {
           "seed": 5,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.06546863402458838,
+          "l2": 0.1492018798844156,
+          "kendall": 0.6969696969696969,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.10125124111159284,
+          "l2": 0.19266949783589996,
+          "kendall": 0.5454545454545454,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -1153,6 +1705,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.2740759312476804
+        },
+        {
+          "seed": 5,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.05563075618156876,
+          "l2": 0.10345477515300407,
+          "kendall": 0.8181818181818181,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.05020663118149705,
+          "l2": 0.10660100831161737,
+          "kendall": 0.8787878787878787,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 6,
@@ -1204,6 +1780,30 @@
         },
         {
           "seed": 6,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.13893620960704847,
+          "l2": 0.2443768282283303,
+          "kendall": 0.6969696969696969,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.14420394684401133,
+          "l2": 0.24770634690228194,
+          "kendall": 0.3636363636363636,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -1249,6 +1849,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.7840892693783967
+        },
+        {
+          "seed": 6,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.13138919351702175,
+          "l2": 0.24209246612276764,
+          "kendall": 0.6969696969696969,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.13986281960898123,
+          "l2": 0.2639187043787941,
+          "kendall": 0.303030303030303,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 6,
@@ -1300,6 +1924,30 @@
         },
         {
           "seed": 6,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.1144438842168351,
+          "l2": 0.2092043703382594,
+          "kendall": 0.5757575757575757,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.08724330701625821,
+          "l2": 0.1994555333591597,
+          "kendall": 0.606060606060606,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -1345,6 +1993,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.2810297770832217
+        },
+        {
+          "seed": 6,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.0810182689103622,
+          "l2": 0.1123427054314383,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.0575677183088287,
+          "l2": 0.11847482457041332,
+          "kendall": 0.7878787878787877,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 7,
@@ -1396,6 +2068,30 @@
         },
         {
           "seed": 7,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.12485427626312055,
+          "l2": 0.2580986536703681,
+          "kendall": 0.5757575757575757,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.10527648793653274,
+          "l2": 0.20907160080013812,
+          "kendall": 0.7272727272727272,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -1441,6 +2137,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.7758202082961426
+        },
+        {
+          "seed": 7,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.12536006883291145,
+          "l2": 0.25050164787125206,
+          "kendall": 0.5757575757575757,
+          "topk_precision": 0.25,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.10178375252479993,
+          "l2": 0.20429780929008756,
+          "kendall": 0.7575757575757575,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 7,
@@ -1492,6 +2212,30 @@
         },
         {
           "seed": 7,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.07269796395527017,
+          "l2": 0.15825129606915445,
+          "kendall": 0.5757575757575757,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.0710565498138562,
+          "l2": 0.1145148192711993,
+          "kendall": 0.6969696969696969,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -1537,6 +2281,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.2822047297172153
+        },
+        {
+          "seed": 7,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.05358272226551566,
+          "l2": 0.09020709024275861,
+          "kendall": 0.8787878787878787,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.04431285084000817,
+          "l2": 0.08598909216917705,
+          "kendall": 0.8484848484848484,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 8,
@@ -1588,6 +2356,30 @@
         },
         {
           "seed": 8,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.14579937465643208,
+          "l2": 0.2874561695451453,
+          "kendall": 0.6666666666666666,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.13353980400584278,
+          "l2": 0.21895269887387878,
+          "kendall": 0.8787878787878787,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -1633,6 +2425,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.7561486801307807
+        },
+        {
+          "seed": 8,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.14576576517071657,
+          "l2": 0.2659600646304107,
+          "kendall": 0.7272727272727272,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.14262723703218896,
+          "l2": 0.23029751986952324,
+          "kendall": 0.8181818181818181,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 8,
@@ -1684,6 +2500,30 @@
         },
         {
           "seed": 8,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.09836316776811968,
+          "l2": 0.1967453859549676,
+          "kendall": 0.8181818181818181,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.1031784288042642,
+          "l2": 0.20336799558381016,
+          "kendall": 0.7878787878787877,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -1729,6 +2569,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.2754776226684322
+        },
+        {
+          "seed": 8,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.04076693716686063,
+          "l2": 0.08346655141465316,
+          "kendall": 0.909090909090909,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.03970873062631709,
+          "l2": 0.08158715935064598,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 9,
@@ -1780,6 +2644,30 @@
         },
         {
           "seed": 9,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.1282642993672433,
+          "l2": 0.2092726428380991,
+          "kendall": 0.6363636363636362,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.12894542830207334,
+          "l2": 0.22396119522601843,
+          "kendall": 0.6969696969696969,
+          "topk_precision": 0.5,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -1825,6 +2713,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.8104917247025026
+        },
+        {
+          "seed": 9,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.10026841756252508,
+          "l2": 0.19781571051779456,
+          "kendall": 0.7272727272727272,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.1312523537152127,
+          "l2": 0.23443094774656245,
+          "kendall": 0.6969696969696969,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 9,
@@ -1876,6 +2788,30 @@
         },
         {
           "seed": 9,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.1083279738830405,
+          "l2": 0.1756627323409945,
+          "kendall": 0.39393939393939387,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.08277417027417026,
+          "l2": 0.147078373374023,
+          "kendall": 0.6666666666666666,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -1921,6 +2857,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.28304423620330227
+        },
+        {
+          "seed": 9,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.04268580906542336,
+          "l2": 0.08316497942446782,
+          "kendall": 0.7575757575757575,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.05974083110146816,
+          "l2": 0.11929821890306352,
+          "kendall": 0.6363636363636362,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         }
       ]
     },
@@ -1976,6 +2936,30 @@
         },
         {
           "seed": 0,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.013561485959231387,
+          "l2": 0.025568416667186806,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.013658248905197179,
+          "l2": 0.021818707064802555,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -2021,6 +3005,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.5857140467900134
+        },
+        {
+          "seed": 0,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.012364805880483151,
+          "l2": 0.024143674732474397,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.012403809542867968,
+          "l2": 0.01877329810654671,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 0,
@@ -2072,6 +3080,30 @@
         },
         {
           "seed": 0,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.012012673944532502,
+          "l2": 0.023173529076648283,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.010969411025956766,
+          "l2": 0.02251184704068569,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -2117,6 +3149,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.1442893439375099
+        },
+        {
+          "seed": 0,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.005200332803993679,
+          "l2": 0.009979836223876796,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 0,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.005189183485231071,
+          "l2": 0.007463772554502999,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 1,
@@ -2168,6 +3224,30 @@
         },
         {
           "seed": 1,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.01807838726191892,
+          "l2": 0.03225505026299816,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.018242058720456464,
+          "l2": 0.036772420791239296,
+          "kendall": 0.909090909090909,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -2213,6 +3293,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.593381532253741
+        },
+        {
+          "seed": 1,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.01807766433463491,
+          "l2": 0.032036813126828836,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.016937562146325795,
+          "l2": 0.034041277046109646,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 1,
@@ -2264,6 +3368,30 @@
         },
         {
           "seed": 1,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.010328339744647759,
+          "l2": 0.01720039052942932,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.01278846582962806,
+          "l2": 0.01763472849798201,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -2309,6 +3437,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.14596415097110732
+        },
+        {
+          "seed": 1,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.003764673323006229,
+          "l2": 0.007620559641304322,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 1,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.0044124842320718005,
+          "l2": 0.006117853387086194,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 2,
@@ -2360,6 +3512,30 @@
         },
         {
           "seed": 2,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.010764086981821491,
+          "l2": 0.023237857797388562,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.016235259642319144,
+          "l2": 0.03454206399729701,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -2405,6 +3581,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.582388410332515
+        },
+        {
+          "seed": 2,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.010571207401249585,
+          "l2": 0.021687143033922374,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.016946623758952374,
+          "l2": 0.028845825391250884,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 2,
@@ -2456,6 +3656,30 @@
         },
         {
           "seed": 2,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.014180147287357614,
+          "l2": 0.026438984864619215,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.019509788719489857,
+          "l2": 0.02815251556475048,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -2501,6 +3725,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.14188252566427584
+        },
+        {
+          "seed": 2,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.006933105256983613,
+          "l2": 0.014567265158491174,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 2,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.007023331899139382,
+          "l2": 0.012945482448996714,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 3,
@@ -2552,6 +3800,30 @@
         },
         {
           "seed": 3,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.018152282788879773,
+          "l2": 0.03547269162303848,
+          "kendall": 0.909090909090909,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.012121678363539806,
+          "l2": 0.023578111089314128,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -2597,6 +3869,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.5805199319197316
+        },
+        {
+          "seed": 3,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.018263188754011228,
+          "l2": 0.036594597327804644,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.01481248503279424,
+          "l2": 0.02821656495579824,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 3,
@@ -2648,6 +3944,30 @@
         },
         {
           "seed": 3,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.01005640609862768,
+          "l2": 0.015813254179693266,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.012690989421688368,
+          "l2": 0.01940804765380422,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -2693,6 +4013,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.1438736838366904
+        },
+        {
+          "seed": 3,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.004212849332550367,
+          "l2": 0.007799044401311363,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 3,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.005178348712090164,
+          "l2": 0.009337540879224676,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 4,
@@ -2744,6 +4088,30 @@
         },
         {
           "seed": 4,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.02454348741483476,
+          "l2": 0.03337273682776102,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.022817263370244756,
+          "l2": 0.03159234181753387,
+          "kendall": 0.909090909090909,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -2789,6 +4157,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.5927410558774631
+        },
+        {
+          "seed": 4,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.026148721900752916,
+          "l2": 0.034866206433348916,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.02413357270489279,
+          "l2": 0.03184532429344924,
+          "kendall": 0.909090909090909,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 4,
@@ -2840,6 +4232,30 @@
         },
         {
           "seed": 4,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.005313649446491302,
+          "l2": 0.01273804774052895,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.004700270804889842,
+          "l2": 0.009719169529151743,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -2885,6 +4301,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.14557003264832533
+        },
+        {
+          "seed": 4,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.008281316986513909,
+          "l2": 0.016974870101450202,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 4,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.009106250944513686,
+          "l2": 0.016569837874778025,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 5,
@@ -2936,6 +4376,30 @@
         },
         {
           "seed": 5,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.015592251052258851,
+          "l2": 0.030162161383602202,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.018472617677666864,
+          "l2": 0.03653974069127323,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -2981,6 +4445,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.5868898322096635
+        },
+        {
+          "seed": 5,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.013528720844992619,
+          "l2": 0.02937369439760268,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.01613865194250072,
+          "l2": 0.030890619466065732,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 5,
@@ -3032,6 +4520,30 @@
         },
         {
           "seed": 5,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.00918860049883126,
+          "l2": 0.01818803405848299,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.008619914217469236,
+          "l2": 0.017962419445078422,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -3077,6 +4589,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.14566115631637858
+        },
+        {
+          "seed": 5,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.0054156660502885645,
+          "l2": 0.010390714227159143,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 5,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.005170885968785031,
+          "l2": 0.010253509325220908,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 6,
@@ -3128,6 +4664,30 @@
         },
         {
           "seed": 6,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.010851436203275396,
+          "l2": 0.023170897886208026,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.015942002471039968,
+          "l2": 0.027146244292063807,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -3173,6 +4733,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.5808894064115849
+        },
+        {
+          "seed": 6,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.010353930266494733,
+          "l2": 0.02220529067504598,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.013160505969539119,
+          "l2": 0.02623810780030507,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 6,
@@ -3224,6 +4808,30 @@
         },
         {
           "seed": 6,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.010123212782695214,
+          "l2": 0.014532339303381006,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.008572283015600882,
+          "l2": 0.01616201648352015,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -3269,6 +4877,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.1418781139220315
+        },
+        {
+          "seed": 6,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.008306846289956926,
+          "l2": 0.015851735657806787,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 6,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.009226694119967349,
+          "l2": 0.016820579046306378,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 7,
@@ -3320,6 +4952,30 @@
         },
         {
           "seed": 7,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.015012710424560732,
+          "l2": 0.022420999549896018,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.012747353078444504,
+          "l2": 0.019255132719945025,
+          "kendall": 0.909090909090909,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -3365,6 +5021,30 @@
           "topk_precision": 0.75,
           "all_covered": 1.0,
           "mean_ci_width": 0.5961180741070872
+        },
+        {
+          "seed": 7,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.013002829026674462,
+          "l2": 0.02116182325265578,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.012020018433671675,
+          "l2": 0.021812611751738754,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 0.75,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 7,
@@ -3416,6 +5096,30 @@
         },
         {
           "seed": 7,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.007637687721991374,
+          "l2": 0.015009834257122205,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.007963957330425764,
+          "l2": 0.014138100651045187,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -3461,6 +5165,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.14514054077917732
+        },
+        {
+          "seed": 7,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.004984469798107828,
+          "l2": 0.010598611127550488,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 7,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.0037019570783529965,
+          "l2": 0.006851920094215596,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 8,
@@ -3512,6 +5240,30 @@
         },
         {
           "seed": 8,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.012203319069560951,
+          "l2": 0.020986882470835664,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.018779329897057072,
+          "l2": 0.03420198774798032,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -3557,6 +5309,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.5900101660541014
+        },
+        {
+          "seed": 8,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.01461285472889886,
+          "l2": 0.021037448063210253,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.01354284468639326,
+          "l2": 0.02604990398205414,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 8,
@@ -3608,6 +5384,30 @@
         },
         {
           "seed": 8,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.013486445279318776,
+          "l2": 0.01646765915621372,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.012490943917067156,
+          "l2": 0.01955668011914584,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -3653,6 +5453,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.1448023210544509
+        },
+        {
+          "seed": 8,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.005590154566196631,
+          "l2": 0.010428823495820184,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 8,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.005686877065857479,
+          "l2": 0.009107676506786365,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 9,
@@ -3704,6 +5528,30 @@
         },
         {
           "seed": 9,
+          "budget": 2000,
+          "estimator": "leverage_shap",
+          "calls": 1998,
+          "linf": 0.014898985340568813,
+          "l2": 0.02677521060108283,
+          "kendall": 0.909090909090909,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
+          "budget": 2000,
+          "estimator": "svarm",
+          "calls": 2000,
+          "linf": 0.010626281899388784,
+          "l2": 0.01812902822864439,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
           "budget": 5000,
           "estimator": "permutation_mc",
           "calls": 4992,
@@ -3749,6 +5597,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.5912326836919807
+        },
+        {
+          "seed": 9,
+          "budget": 5000,
+          "estimator": "leverage_shap",
+          "calls": 4096,
+          "linf": 0.013716025000193713,
+          "l2": 0.025757539717872802,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
+          "budget": 5000,
+          "estimator": "svarm",
+          "calls": 4096,
+          "linf": 0.015035823936172994,
+          "l2": 0.0242759778660621,
+          "kendall": 0.9999999999999998,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         },
         {
           "seed": 9,
@@ -3800,6 +5672,30 @@
         },
         {
           "seed": 9,
+          "budget": 10000,
+          "estimator": "leverage_shap",
+          "calls": 8192,
+          "linf": 0.008710712754432665,
+          "l2": 0.01242797228433383,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
+          "budget": 10000,
+          "estimator": "svarm",
+          "calls": 8192,
+          "linf": 0.0056631366213214926,
+          "l2": 0.009803772877828913,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
           "budget": 25000,
           "estimator": "permutation_mc",
           "calls": 24999,
@@ -3845,6 +5741,30 @@
           "topk_precision": 1.0,
           "all_covered": 1.0,
           "mean_ci_width": 0.14561818897260329
+        },
+        {
+          "seed": 9,
+          "budget": 25000,
+          "estimator": "leverage_shap",
+          "calls": 24576,
+          "linf": 0.005128910018058746,
+          "l2": 0.008933622550926314,
+          "kendall": 0.9696969696969696,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
+        },
+        {
+          "seed": 9,
+          "budget": 25000,
+          "estimator": "svarm",
+          "calls": 24576,
+          "linf": 0.004679084721901455,
+          "l2": 0.008168459357479629,
+          "kendall": 0.9393939393939392,
+          "topk_precision": 1.0,
+          "all_covered": null,
+          "mean_ci_width": null
         }
       ]
     }

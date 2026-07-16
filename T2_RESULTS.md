@@ -43,14 +43,20 @@ Top-5 pairwise Mobius interactions:
 | 3000 | kernel_shap | 0.0583 | 0.678 | n/a | n/a |
 | 3000 | cc_bernstein | 0.0488 | 0.629 | 1.00 | 0.8519 |
 | 3000 | surrogate_cc | 0.0572 | 0.598 | 1.00 | 1.9369 |
+| 3000 | leverage_shap | 0.0811 | 0.451 | n/a | n/a |
+| 3000 | svarm | 0.0781 | 0.470 | n/a | n/a |
 | 10000 | permutation_mc | 0.0446 | 0.583 | 1.00 | 0.7346 |
 | 10000 | kernel_shap | 0.0364 | 0.818 | n/a | n/a |
 | 10000 | cc_bernstein | 0.0263 | 0.803 | 1.00 | 0.4129 |
 | 10000 | surrogate_cc | 0.0276 | 0.822 | 1.00 | 0.7089 |
+| 10000 | leverage_shap | 0.0741 | 0.542 | n/a | n/a |
+| 10000 | svarm | 0.0788 | 0.530 | n/a | n/a |
 | 30000 | permutation_mc | 0.0275 | 0.780 | 1.00 | 0.4500 |
 | 30000 | kernel_shap | 0.0289 | 0.905 | n/a | n/a |
 | 30000 | cc_bernstein | 0.0109 | 0.920 | 1.00 | 0.2208 |
 | 30000 | surrogate_cc | 0.0151 | 0.894 | 1.00 | 0.3008 |
+| 30000 | leverage_shap | 0.0595 | 0.648 | n/a | n/a |
+| 30000 | svarm | 0.0518 | 0.686 | n/a | n/a |
 
 ## Hierarchical triage (TreeSHAP-Elim, tau = 0.08, 200k replayed calls, 8 seeds)
 

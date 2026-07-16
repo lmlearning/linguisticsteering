@@ -40,7 +40,7 @@
  "grid": {
   "calls": 0,
   "cost_usd": 0.0,
-  "seconds": 24.090649604797363
+  "seconds": 8.906375169754028
  },
  "exact_shapley": {
   "expert": -0.01049663299663298,
@@ -156,6 +156,26 @@
   },
   {
    "seed": 0,
+   "budget": 3000,
+   "estimator": "leverage_shap",
+   "linf": 0.08219407763641065,
+   "kendall": 0.4545454545454545,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 0,
+   "budget": 3000,
+   "estimator": "svarm",
+   "linf": 0.08096828825836805,
+   "kendall": 0.1818181818181818,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 0,
    "budget": 10000,
    "estimator": "permutation_mc",
    "linf": 0.03529265873015872,
@@ -196,6 +216,26 @@
   },
   {
    "seed": 0,
+   "budget": 10000,
+   "estimator": "leverage_shap",
+   "linf": 0.0764134952161232,
+   "kendall": 0.5757575757575757,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 0,
+   "budget": 10000,
+   "estimator": "svarm",
+   "linf": 0.07835375041766235,
+   "kendall": 0.39393939393939387,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 0,
    "budget": 30000,
    "estimator": "permutation_mc",
    "linf": 0.028389777394978964,
@@ -232,6 +272,26 @@
    "kendall": 0.9393939393939392,
    "all_covered": 1.0,
    "mean_ci_width": 0.26790011296499694,
+   "cost": 0.0
+  },
+  {
+   "seed": 0,
+   "budget": 30000,
+   "estimator": "leverage_shap",
+   "linf": 0.06020408163265306,
+   "kendall": 0.5151515151515151,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 0,
+   "budget": 30000,
+   "estimator": "svarm",
+   "linf": 0.03320037105751391,
+   "kendall": 0.6969696969696969,
+   "all_covered": null,
+   "mean_ci_width": null,
    "cost": 0.0
   },
   {
@@ -276,6 +336,26 @@
   },
   {
    "seed": 1,
+   "budget": 3000,
+   "estimator": "leverage_shap",
+   "linf": 0.07092523773882503,
+   "kendall": 0.6363636363636362,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 1,
+   "budget": 3000,
+   "estimator": "svarm",
+   "linf": 0.05663251315242088,
+   "kendall": 0.6969696969696969,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 1,
    "budget": 10000,
    "estimator": "permutation_mc",
    "linf": 0.04153025793650795,
@@ -316,6 +396,26 @@
   },
   {
    "seed": 1,
+   "budget": 10000,
+   "estimator": "leverage_shap",
+   "linf": 0.05471281848307631,
+   "kendall": 0.7878787878787877,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 1,
+   "budget": 10000,
+   "estimator": "svarm",
+   "linf": 0.06257302053564291,
+   "kendall": 0.6666666666666666,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 1,
    "budget": 30000,
    "estimator": "permutation_mc",
    "linf": 0.029896211167342243,
@@ -352,6 +452,26 @@
    "kendall": 0.8484848484848484,
    "all_covered": 1.0,
    "mean_ci_width": 0.2690350153576158,
+   "cost": 0.0
+  },
+  {
+   "seed": 1,
+   "budget": 30000,
+   "estimator": "leverage_shap",
+   "linf": 0.044690785405071404,
+   "kendall": 0.6666666666666666,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 1,
+   "budget": 30000,
+   "estimator": "svarm",
+   "linf": 0.059937126365697785,
+   "kendall": 0.6363636363636362,
+   "all_covered": null,
+   "mean_ci_width": null,
    "cost": 0.0
   },
   {
@@ -396,6 +516,26 @@
   },
   {
    "seed": 2,
+   "budget": 3000,
+   "estimator": "leverage_shap",
+   "linf": 0.07086083974983987,
+   "kendall": 0.2727272727272727,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 2,
+   "budget": 3000,
+   "estimator": "svarm",
+   "linf": 0.07140317803779628,
+   "kendall": 0.7272727272727272,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 2,
    "budget": 10000,
    "estimator": "permutation_mc",
    "linf": 0.04255862193362192,
@@ -436,6 +576,26 @@
   },
   {
    "seed": 2,
+   "budget": 10000,
+   "estimator": "leverage_shap",
+   "linf": 0.0598169377604761,
+   "kendall": 0.2424242424242424,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 2,
+   "budget": 10000,
+   "estimator": "svarm",
+   "linf": 0.07194276309193923,
+   "kendall": 0.6969696969696969,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 2,
    "budget": 30000,
    "estimator": "permutation_mc",
    "linf": 0.025234387656364238,
@@ -472,6 +632,26 @@
    "kendall": 0.8484848484848484,
    "all_covered": 1.0,
    "mean_ci_width": 0.27300485960786447,
+   "cost": 0.0
+  },
+  {
+   "seed": 2,
+   "budget": 30000,
+   "estimator": "leverage_shap",
+   "linf": 0.03187435580292709,
+   "kendall": 0.7878787878787877,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 2,
+   "budget": 30000,
+   "estimator": "svarm",
+   "linf": 0.033239366453652136,
+   "kendall": 0.6363636363636362,
+   "all_covered": null,
+   "mean_ci_width": null,
    "cost": 0.0
   },
   {
@@ -516,6 +696,26 @@
   },
   {
    "seed": 3,
+   "budget": 3000,
+   "estimator": "leverage_shap",
+   "linf": 0.07676403933328303,
+   "kendall": 0.2424242424242424,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 3,
+   "budget": 3000,
+   "estimator": "svarm",
+   "linf": 0.10112680544279572,
+   "kendall": 0.4242424242424242,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 3,
    "budget": 10000,
    "estimator": "permutation_mc",
    "linf": 0.032982954545454544,
@@ -556,6 +756,26 @@
   },
   {
    "seed": 3,
+   "budget": 10000,
+   "estimator": "leverage_shap",
+   "linf": 0.08088464554846647,
+   "kendall": 0.2727272727272727,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 3,
+   "budget": 10000,
+   "estimator": "svarm",
+   "linf": 0.10641333245069545,
+   "kendall": 0.4848484848484848,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 3,
    "budget": 30000,
    "estimator": "permutation_mc",
    "linf": 0.022174847740517513,
@@ -592,6 +812,26 @@
    "kendall": 0.9393939393939392,
    "all_covered": 1.0,
    "mean_ci_width": 0.26431731245256,
+   "cost": 0.0
+  },
+  {
+   "seed": 3,
+   "budget": 30000,
+   "estimator": "leverage_shap",
+   "linf": 0.0551546072974643,
+   "kendall": 0.5151515151515151,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 3,
+   "budget": 30000,
+   "estimator": "svarm",
+   "linf": 0.045200474129045556,
+   "kendall": 0.6666666666666666,
+   "all_covered": null,
+   "mean_ci_width": null,
    "cost": 0.0
   },
   {
@@ -636,6 +876,26 @@
   },
   {
    "seed": 4,
+   "budget": 3000,
+   "estimator": "leverage_shap",
+   "linf": 0.09839385171472835,
+   "kendall": 0.5757575757575757,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 4,
+   "budget": 3000,
+   "estimator": "svarm",
+   "linf": 0.07380221470894707,
+   "kendall": 0.4545454545454545,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 4,
    "budget": 10000,
    "estimator": "permutation_mc",
    "linf": 0.03263392857142871,
@@ -676,6 +936,26 @@
   },
   {
    "seed": 4,
+   "budget": 10000,
+   "estimator": "leverage_shap",
+   "linf": 0.08174633601908968,
+   "kendall": 0.6666666666666666,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 4,
+   "budget": 10000,
+   "estimator": "svarm",
+   "linf": 0.0724132836501484,
+   "kendall": 0.6363636363636362,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 4,
    "budget": 30000,
    "estimator": "permutation_mc",
    "linf": 0.027754417354547686,
@@ -712,6 +992,26 @@
    "kendall": 0.909090909090909,
    "all_covered": 1.0,
    "mean_ci_width": 0.2670932138509497,
+   "cost": 0.0
+  },
+  {
+   "seed": 4,
+   "budget": 30000,
+   "estimator": "leverage_shap",
+   "linf": 0.04388218923933201,
+   "kendall": 0.6969696969696969,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 4,
+   "budget": 30000,
+   "estimator": "svarm",
+   "linf": 0.05788909503195215,
+   "kendall": 0.39393939393939387,
+   "all_covered": null,
+   "mean_ci_width": null,
    "cost": 0.0
   },
   {
@@ -756,6 +1056,26 @@
   },
   {
    "seed": 5,
+   "budget": 3000,
+   "estimator": "leverage_shap",
+   "linf": 0.06967044475729726,
+   "kendall": 0.39393939393939387,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 5,
+   "budget": 3000,
+   "estimator": "svarm",
+   "linf": 0.07729379150556287,
+   "kendall": 0.4545454545454545,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 5,
    "budget": 10000,
    "estimator": "permutation_mc",
    "linf": 0.026472537878787887,
@@ -796,6 +1116,26 @@
   },
   {
    "seed": 5,
+   "budget": 10000,
+   "estimator": "leverage_shap",
+   "linf": 0.07391040622252548,
+   "kendall": 0.4242424242424242,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 5,
+   "budget": 10000,
+   "estimator": "svarm",
+   "linf": 0.0730383188650966,
+   "kendall": 0.606060606060606,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 5,
    "budget": 30000,
    "estimator": "permutation_mc",
    "linf": 0.019720509948078217,
@@ -832,6 +1172,26 @@
    "kendall": 0.9696969696969696,
    "all_covered": 1.0,
    "mean_ci_width": 0.28450405475785795,
+   "cost": 0.0
+  },
+  {
+   "seed": 5,
+   "budget": 30000,
+   "estimator": "leverage_shap",
+   "linf": 0.029680478251906697,
+   "kendall": 0.7878787878787877,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 5,
+   "budget": 30000,
+   "estimator": "svarm",
+   "linf": 0.0355143269428984,
+   "kendall": 0.8181818181818181,
+   "all_covered": null,
+   "mean_ci_width": null,
    "cost": 0.0
   },
   {
@@ -876,6 +1236,26 @@
   },
   {
    "seed": 6,
+   "budget": 3000,
+   "estimator": "leverage_shap",
+   "linf": 0.09946590986028728,
+   "kendall": 0.6363636363636362,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 6,
+   "budget": 3000,
+   "estimator": "svarm",
+   "linf": 0.08478890702235384,
+   "kendall": 0.3333333333333333,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 6,
    "budget": 10000,
    "estimator": "permutation_mc",
    "linf": 0.04493326118326121,
@@ -916,6 +1296,26 @@
   },
   {
    "seed": 6,
+   "budget": 10000,
+   "estimator": "leverage_shap",
+   "linf": 0.08715860074727326,
+   "kendall": 0.7272727272727272,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 6,
+   "budget": 10000,
+   "estimator": "svarm",
+   "linf": 0.07907896724781238,
+   "kendall": 0.4242424242424242,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 6,
    "budget": 30000,
    "estimator": "permutation_mc",
    "linf": 0.0212760570595421,
@@ -952,6 +1352,26 @@
    "kendall": 0.8787878787878787,
    "all_covered": 1.0,
    "mean_ci_width": 0.2717710617486439,
+   "cost": 0.0
+  },
+  {
+   "seed": 6,
+   "budget": 30000,
+   "estimator": "leverage_shap",
+   "linf": 0.043668315811173,
+   "kendall": 0.4545454545454545,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 6,
+   "budget": 30000,
+   "estimator": "svarm",
+   "linf": 0.05231687624544737,
+   "kendall": 0.6363636363636362,
+   "all_covered": null,
+   "mean_ci_width": null,
    "cost": 0.0
   },
   {
@@ -996,6 +1416,26 @@
   },
   {
    "seed": 7,
+   "budget": 3000,
+   "estimator": "leverage_shap",
+   "linf": 0.07544402692206387,
+   "kendall": 0.303030303030303,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 7,
+   "budget": 3000,
+   "estimator": "svarm",
+   "linf": 0.09337347747067098,
+   "kendall": 0.1818181818181818,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 7,
    "budget": 10000,
    "estimator": "permutation_mc",
    "linf": 0.04028273809523797,
@@ -1036,6 +1476,26 @@
   },
   {
    "seed": 7,
+   "budget": 10000,
+   "estimator": "leverage_shap",
+   "linf": 0.055078579820157576,
+   "kendall": 0.4848484848484848,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 7,
+   "budget": 10000,
+   "estimator": "svarm",
+   "linf": 0.06340386018125294,
+   "kendall": 0.5151515151515151,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 7,
    "budget": 30000,
    "estimator": "permutation_mc",
    "linf": 0.017930418808182105,
@@ -1072,6 +1532,26 @@
    "kendall": 0.8181818181818181,
    "all_covered": 1.0,
    "mean_ci_width": 0.25803034303387434,
+   "cost": 0.0
+  },
+  {
+   "seed": 7,
+   "budget": 30000,
+   "estimator": "leverage_shap",
+   "linf": 0.03526489383632242,
+   "kendall": 0.7575757575757575,
+   "all_covered": null,
+   "mean_ci_width": null,
+   "cost": 0.0
+  },
+  {
+   "seed": 7,
+   "budget": 30000,
+   "estimator": "svarm",
+   "linf": 0.037725554868411934,
+   "kendall": 0.6666666666666666,
+   "all_covered": null,
+   "mean_ci_width": null,
    "cost": 0.0
   }
  ],
