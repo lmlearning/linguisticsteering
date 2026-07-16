@@ -199,6 +199,12 @@ class PromptSegmentGame(NoisyGame):
                         temperature=self.temperature,
                         **kwargs,
                     )
+                # Providers occasionally return HTTP 200 with an error body
+                # (choices missing/None). Treat as transient and retry.
+                if not getattr(response, "choices", None):
+                    raise RuntimeError(
+                        f"malformed response (no choices): {getattr(response, 'model_extra', None)}"
+                    )
                 break
             except Exception as err:  # rate limits, transient 5xx, timeouts
                 last_err = err
