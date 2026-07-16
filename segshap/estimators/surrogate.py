@@ -99,7 +99,6 @@ def fit_mobius_surrogate(
     n_coalitions = max(budget_calls // replicates, 2)
 
     coalitions = []
-    ys = []
     # Anchor with the empty and grand coalitions, then uniform-size sampling.
     fixed = [frozenset(), frozenset(range(n))]
     for idx in range(n_coalitions):
@@ -109,7 +108,9 @@ def fit_mobius_surrogate(
             size = int(rng.integers(0, n + 1))
             s = frozenset(rng.choice(n, size=size, replace=False).tolist())
         coalitions.append(s)
-        ys.append(float(np.mean(game.evaluate(s, replicates))))
+    # The design is non-adaptive: evaluate everything as one concurrent batch.
+    values = game.evaluate_many(coalitions, replicates)
+    ys = [float(np.mean(v)) for v in values]
 
     x = np.zeros((len(coalitions), len(terms)))
     for row, s in enumerate(coalitions):

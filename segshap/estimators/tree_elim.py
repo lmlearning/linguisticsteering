@@ -68,34 +68,42 @@ def _owen_members(
     start_calls = game.calls
     pair_cost = 2 * replicates
 
-    def draw_pair(t: int) -> None:
-        n_pre = int(rng.integers(0, len(others) + 1)) if others else 0
-        prefix = rng.choice(others, size=n_pre, replace=False) if n_pre else []
-        u = frozenset(i for j in prefix for i in groups[int(j)])
-        inside = rng.choice(k, size=t, replace=False)
-        t_set = frozenset(members[int(i)] for i in inside)
-        c_set = frozenset(members) - t_set
-        v_t = float(np.mean(game.evaluate(u | t_set, replicates)))
-        v_c = float(np.mean(game.evaluate(u | c_set, replicates)))
-        cc = v_t - v_c
-        for local, i in enumerate(members):
-            if i in t_set:
-                est.add(local, t - 1, cc)
-            else:
-                est.add(local, (k - t) - 1, -cc)
+    def draw_pairs(t_batch: list) -> None:
+        """One (T, g\\T) pair per requested size, one concurrent eval batch."""
+        pairs = []
+        for t in t_batch:
+            n_pre = int(rng.integers(0, len(others) + 1)) if others else 0
+            prefix = rng.choice(others, size=n_pre, replace=False) if n_pre else []
+            u = frozenset(i for j in prefix for i in groups[int(j)])
+            inside = rng.choice(k, size=t, replace=False)
+            t_set = frozenset(members[int(i)] for i in inside)
+            c_set = frozenset(members) - t_set
+            pairs.append((t, t_set, u | t_set, u | c_set))
+        flat = [c for _, _, a, b in pairs for c in (a, b)]
+        values = game.evaluate_many(flat, replicates)
+        for idx, (t, t_set, _, _) in enumerate(pairs):
+            v_t = float(np.mean(values[2 * idx]))
+            v_c = float(np.mean(values[2 * idx + 1]))
+            cc = v_t - v_c
+            for local, i in enumerate(members):
+                if i in t_set:
+                    est.add(local, t - 1, cc)
+                else:
+                    est.add(local, (k - t) - 1, -cc)
 
     def spent() -> int:
         return game.calls - start_calls
 
     for _ in range(min_pairs_per_size):
-        for t in range(1, k + 1):
-            if spent() + pair_cost > budget_calls:
-                break
-            try:
-                draw_pair(t)
-            except BudgetExceeded:
-                break
-    batch_pairs = max(8, k)
+        room = max(0, (budget_calls - spent()) // pair_cost)
+        t_batch = list(range(1, k + 1))[:room]
+        if not t_batch:
+            break
+        try:
+            draw_pairs(t_batch)
+        except BudgetExceeded:
+            break
+    batch_pairs = max(16, k)
     while spent() + pair_cost <= budget_calls:
         hw = np.array(
             [
@@ -105,11 +113,12 @@ def _owen_members(
         )
         hw[~np.isfinite(hw)] = 4.0 * game.range * k
         t_next = int(np.argmax(hw)) + 1
+        room = (budget_calls - spent()) // pair_cost
+        n_batch = int(min(batch_pairs, room))
+        if n_batch <= 0:
+            break
         try:
-            for _ in range(batch_pairs):
-                if spent() + pair_cost > budget_calls:
-                    break
-                draw_pair(t_next)
+            draw_pairs([t_next] * n_batch)
         except BudgetExceeded:
             break
 
