@@ -237,22 +237,29 @@ class PromptSegmentGame(NoisyGame):
         for prompt, q_idx, key in jobs:
             unique.setdefault(key, (prompt, q_idx))
 
-        async def run_batch():
-            semaphore = asyncio.Semaphore(concurrency or self.max_concurrency)
-            tasks = [
-                self._one_call(prompt, semaphore) for prompt, _ in unique.values()
-            ]
-            return await asyncio.gather(*tasks)
-
-        responses = asyncio.run(run_batch())
         out: dict[str, str] = {}
-        for (key, _), (text, usage) in zip(unique.items(), responses):
-            self.usage.add(usage["prompt"], usage["cached"], usage["completion"])
-            self.total_cost += usage["cost"]
-            path = self._cache_path(key)
-            if path is not None:
-                path.write_text(json.dumps({"response": text, "usage": usage}))
-            out[key] = text
+        items = list(unique.items())
+        # Chunk large batches so completed work lands in the disk cache even
+        # if the process dies mid-batch (interrupted runs resume for free).
+        chunk_size = 2_000
+        for start in range(0, len(items), chunk_size):
+            chunk = items[start : start + chunk_size]
+
+            async def run_batch(chunk=chunk):
+                semaphore = asyncio.Semaphore(concurrency or self.max_concurrency)
+                tasks = [
+                    self._one_call(prompt, semaphore) for _, (prompt, _) in chunk
+                ]
+                return await asyncio.gather(*tasks)
+
+            responses = asyncio.run(run_batch())
+            for (key, _), (text, usage) in zip(chunk, responses):
+                self.usage.add(usage["prompt"], usage["cached"], usage["completion"])
+                self.total_cost += usage["cost"]
+                path = self._cache_path(key)
+                if path is not None:
+                    path.write_text(json.dumps({"response": text, "usage": usage}))
+                out[key] = text
         return out
 
     def _sample(self, coalition: Coalition, replicates: int) -> np.ndarray:
