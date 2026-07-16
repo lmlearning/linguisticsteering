@@ -159,6 +159,18 @@ def test_kendall_tau_metric():
     assert kendall_tau(np.array([1.0, 2.0, 3.0]), np.array([10.0, 20.0, 30.0])) == 1.0
 
 
+def test_external_baselines_match_truth():
+    from segshap.estimators.external import leverage_shap, svarm_shapley
+
+    game = make_game(noise="none")
+    truth = game.exact_shapley
+    res = leverage_shap(game, budget_calls=200, rng=0)
+    assert linf_error(res.values, truth) < 1e-10  # saturated -> exact
+    game2 = make_game(noise="gauss", sigma=0.05, seed=1)
+    res2 = svarm_shapley(game2, budget_calls=4000, replicates=2, rng=1)
+    assert linf_error(res2.values, truth) < 0.05
+
+
 def test_betting_interval_covers_and_beats_eb():
     from segshap.bounds import betting_interval, eb_halfwidth
 

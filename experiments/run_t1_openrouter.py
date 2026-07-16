@@ -32,6 +32,7 @@ import numpy as np
 
 from segshap import cc_shapley, exact_shapley, kernel_shap, permutation_mc, surrogate_shapley
 from segshap.llm import PromptSegmentGame, mmlu_style_render
+from segshap.estimators.external import leverage_shap, svarm_shapley
 from segshap.metrics import ci_coverage, kendall_tau, linf_error, mean_ci_width
 
 MODEL = "qwen/qwen3.5-9b"
@@ -114,6 +115,8 @@ def main() -> None:
         "surrogate_cc": lambda g, b, seed: surrogate_shapley(
             g, b, order=2, replicates=REPLICATES, delta=DELTA, rng=seed
         ),
+        "leverage_shap": lambda g, b, seed: leverage_shap(g, b, replicates=REPLICATES, rng=seed),
+        "svarm": lambda g, b, seed: svarm_shapley(g, b, replicates=REPLICATES, rng=seed),
     }
     rows = []
     for seed in range(10):

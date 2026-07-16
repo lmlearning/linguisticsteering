@@ -29,6 +29,7 @@ from segshap import (
     random_sparse_game,
     surrogate_shapley,
 )
+from segshap.estimators.external import leverage_shap, svarm_shapley
 from segshap.metrics import (
     ci_coverage,
     kendall_tau,
@@ -50,6 +51,8 @@ ESTIMATORS = {
     "surrogate_cc": lambda g, b, seed: surrogate_shapley(
         g, b, order=2, delta=DELTA, rng=seed
     ),
+    "leverage_shap": lambda g, b, seed: leverage_shap(g, b, rng=seed),
+    "svarm": lambda g, b, seed: svarm_shapley(g, b, rng=seed),
 }
 
 
