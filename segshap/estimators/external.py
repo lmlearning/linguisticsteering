@@ -93,6 +93,11 @@ def leverage_shap(
     rng = rng if isinstance(rng, np.random.Generator) else np.random.default_rng(rng)
     start_calls = game.calls
 
+    # Deterministic leverage sampling saturates at full enumeration (2^n
+    # rows); past that point spend the remaining budget on replicates so the
+    # comparison against other estimators is full-budget fair on noisy games.
+    if budget_calls // replicates >= 2**n:
+        replicates = max(replicates, budget_calls // 2**n)
     m = budget_calls // replicates - 2
     sizes = np.arange(1, n)
     counts_per_size = np.array([binom(n, s) for s in sizes])
