@@ -84,20 +84,26 @@ def kernel_shap(
     size_probs = (n - 1) / (sizes * (n - sizes))
     size_probs = size_probs / size_probs.sum()
 
-    rows = []
-    ys = []
-    while game.calls - start_calls + replicates * (2 if paired else 1) <= budget_calls:
+    # Sampling is non-adaptive, so draw the whole design first and evaluate
+    # it in one concurrent batch.
+    coalitions = []
+    while (len(coalitions) + (2 if paired else 1) + 2) * replicates <= budget_calls:
         s = int(rng.choice(sizes, p=size_probs))
         members = frozenset(rng.choice(n, size=s, replace=False).tolist())
-        batch = [members, frozenset(range(n)) - members] if paired else [members]
-        try:
-            for coal in batch:
-                z = np.zeros(n)
-                z[list(coal)] = 1.0
-                rows.append(z)
-                ys.append(float(np.mean(game.evaluate(coal, replicates))))
-        except BudgetExceeded:
-            break
+        coalitions.append(members)
+        if paired:
+            coalitions.append(frozenset(range(n)) - members)
+    rows = []
+    ys = []
+    try:
+        values = game.evaluate_many(coalitions, replicates)
+        for coal, vals in zip(coalitions, values):
+            z = np.zeros(n)
+            z[list(coal)] = 1.0
+            rows.append(z)
+            ys.append(float(np.mean(vals)))
+    except BudgetExceeded:
+        pass
 
     if not rows:
         return ShapleyResult(

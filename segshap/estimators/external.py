@@ -30,11 +30,11 @@ from segshap.games import NoisyGame
 
 def _game_fn(game: NoisyGame, replicates: int):
     def fn(coalitions: np.ndarray) -> np.ndarray:
-        out = np.empty(coalitions.shape[0])
-        for row_idx, row in enumerate(coalitions):
-            members = frozenset(int(i) for i in np.where(row)[0])
-            out[row_idx] = float(np.mean(game.evaluate(members, replicates)))
-        return out
+        sets = [
+            frozenset(int(i) for i in np.where(row)[0]) for row in coalitions
+        ]
+        values = game.evaluate_many(sets, replicates)
+        return np.array([float(np.mean(v)) for v in values])
 
     return fn
 
@@ -150,12 +150,13 @@ def leverage_shap(
                 row_sizes += [s, s]
             inclusion[s] = k / c_ns
 
-    v_empty = float(np.mean(game.evaluate(frozenset(), replicates)))
-    v_full = float(np.mean(game.evaluate(frozenset(range(n)), replicates)))
-    total = v_full - v_empty
-    y = np.array(
-        [float(np.mean(game.evaluate(z, replicates))) - v_empty for z in rows]
+    all_evals = game.evaluate_many(
+        [frozenset(), frozenset(range(n))] + rows, replicates
     )
+    v_empty = float(np.mean(all_evals[0]))
+    v_full = float(np.mean(all_evals[1]))
+    total = v_full - v_empty
+    y = np.array([float(np.mean(v)) for v in all_evals[2:]]) - v_empty
 
     z_mat = np.zeros((len(rows), n))
     for i, z in enumerate(rows):

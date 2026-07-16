@@ -57,6 +57,16 @@ class NoisyGame(ABC):
         self.calls += replicates
         return self._sample(frozenset(coalition), replicates)
 
+    def evaluate_many(
+        self, coalitions: Sequence[Iterable[int]], replicates: int = 1
+    ) -> list:
+        """Evaluate several coalitions; subclasses may parallelize.
+
+        Statistically identical to sequential evaluate() calls — batching
+        exists so expensive oracles (LLM APIs) can fire requests concurrently.
+        """
+        return [self.evaluate(c, replicates) for c in coalitions]
+
     @abstractmethod
     def _sample(self, coalition: Coalition, replicates: int) -> np.ndarray:
         ...
@@ -137,6 +147,15 @@ class QuotientGame(NoisyGame):
         self.calls += replicates
         return self.base.evaluate(union, replicates)
 
+    def evaluate_many(
+        self, coalitions: Sequence[Iterable[int]], replicates: int = 1
+    ) -> list:
+        unions = [
+            frozenset(i for g in c for i in self.groups[g]) for c in coalitions
+        ]
+        self.calls += replicates * len(unions)
+        return self.base.evaluate_many(unions, replicates)
+
     def _sample(self, coalition: Coalition, replicates: int) -> np.ndarray:  # pragma: no cover
         raise NotImplementedError("QuotientGame delegates to the base game")
 
@@ -167,6 +186,14 @@ class TransformedGame(NoisyGame):
         s = frozenset(coalition)
         self.calls += replicates  # keep the wrapper's spend observable
         return self.base.evaluate(s, replicates) - self.shift_fn(s)
+
+    def evaluate_many(
+        self, coalitions: Sequence[Iterable[int]], replicates: int = 1
+    ) -> list:
+        sets = [frozenset(c) for c in coalitions]
+        self.calls += replicates * len(sets)
+        raw = self.base.evaluate_many(sets, replicates)
+        return [r - self.shift_fn(s) for r, s in zip(raw, sets)]
 
     def _sample(self, coalition: Coalition, replicates: int) -> np.ndarray:  # pragma: no cover
         raise NotImplementedError("TransformedGame delegates to the base game")

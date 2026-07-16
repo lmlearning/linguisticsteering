@@ -71,6 +71,7 @@ def cc_shapley(
     min_pairs_per_size: int = 3,
     adaptive: bool = True,
     ci_method: str = "betting",
+    batch_pairs: Optional[int] = None,
     rng: Optional[np.random.Generator | int] = None,
 ) -> ShapleyResult:
     """Estimate all Shapley values of ``game`` with simultaneous (eps, delta) CIs.
@@ -93,37 +94,43 @@ def cc_shapley(
     def spent() -> int:
         return game.calls - start_calls
 
-    def draw_pair(s: int) -> None:
-        members = rng.choice(players, size=s, replace=False)
-        member_set = frozenset(int(i) for i in members)
-        complement = frozenset(range(n)) - member_set
-        v_s = float(np.mean(game.evaluate(member_set, replicates)))
-        # s == n: the complement is empty; v(empty) is still a real evaluation.
-        v_c = float(np.mean(game.evaluate(complement, replicates)))
-        cc = v_s - v_c
-        for i in member_set:
-            est.add(i, s - 1, cc)
-        for j in complement:
-            est.add(j, (n - s) - 1, -cc)
-        pairs_per_size[s] += 1
+    def draw_pairs(sizes_batch: list) -> None:
+        """Draw one pair per requested size, evaluated as one concurrent batch."""
+        pairs = []
+        for s in sizes_batch:
+            members = rng.choice(players, size=s, replace=False)
+            member_set = frozenset(int(i) for i in members)
+            pairs.append((s, member_set, frozenset(range(n)) - member_set))
+        coalitions = [c for _, m, comp in pairs for c in (m, comp)]
+        values = game.evaluate_many(coalitions, replicates)
+        for idx, (s, member_set, complement) in enumerate(pairs):
+            v_s = float(np.mean(values[2 * idx]))
+            v_c = float(np.mean(values[2 * idx + 1]))
+            cc = v_s - v_c
+            for i in member_set:
+                est.add(i, s - 1, cc)
+            for j in complement:
+                est.add(j, (n - s) - 1, -cc)
+            pairs_per_size[s] += 1
 
     pair_cost = 2 * replicates
 
     # Phase 1: seed every size so no stratum CI stays infinite.
     for _ in range(min_pairs_per_size):
-        for s in range(1, n + 1):
-            if spent() + pair_cost > budget_calls:
-                break
-            try:
-                draw_pair(s)
-            except BudgetExceeded:
-                break
+        room = max(0, (budget_calls - spent()) // pair_cost)
+        sizes_batch = list(range(1, n + 1))[:room]
+        if not sizes_batch:
+            break
+        try:
+            draw_pairs(sizes_batch)
+        except BudgetExceeded:
+            break
 
     # Phase 2: adaptive allocation across sizes, re-scored once per batch to
     # keep overhead negligible relative to oracle cost. Adaptivity across
     # batches never invalidates the CIs (they are anytime-valid and samples
     # within a stratum stay i.i.d.).
-    batch_pairs = max(8, n)
+    batch_pairs = batch_pairs or max(8, n)
     while spent() + pair_cost <= budget_calls:
         if target_eps is not None and np.all(est.halfwidths() <= target_eps):
             break
@@ -144,11 +151,12 @@ def cc_shapley(
             s_next = int(np.argmax(scores))
         else:
             s_next = int(rng.integers(1, n + 1))
+        room = (budget_calls - spent()) // pair_cost
+        k = int(min(batch_pairs, room))
+        if k <= 0:
+            break
         try:
-            for _ in range(batch_pairs):
-                if spent() + pair_cost > budget_calls:
-                    break
-                draw_pair(s_next)
+            draw_pairs([s_next] * k)
         except BudgetExceeded:
             break
 

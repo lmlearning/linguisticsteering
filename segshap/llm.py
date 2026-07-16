@@ -287,6 +287,59 @@ class PromptSegmentGame(NoisyGame):
 
         return np.array(results, dtype=float)
 
+    def evaluate_many(self, coalitions, replicates: int = 1) -> list:
+        """Evaluate many coalitions with one concurrent fetch batch.
+
+        Statistically identical to sequential evaluate() (same rng question
+        draws, same cache keys); the only difference is that all missing
+        responses are fetched in a single concurrent batch, which is what
+        makes adaptive estimators viable against a live API at scale.
+        """
+        if self.budget is not None and self.calls + replicates * len(coalitions) > self.budget:
+            from segshap.games import BudgetExceeded
+
+            raise BudgetExceeded("evaluate_many would exceed the game budget")
+        sets = [frozenset(c) for c in coalitions]
+        self.calls += replicates * len(sets)
+
+        plans = []  # per coalition: list of (q_idx, key)
+        to_fetch = []
+        for s in sets:
+            present = [seg for idx, seg in enumerate(self.segments) if idx in s]
+            slots = []
+            for q_idx in self.rng.integers(0, len(self.questions), size=replicates):
+                q_idx = int(q_idx)
+                nonce = int(self.rng.integers(0, 2**31)) if self.temperature > 0 else 0
+                key = self._cache_key(s, q_idx, nonce)
+                slots.append((q_idx, key))
+                if self.temperature == 0 and key in self._utility_memo:
+                    continue
+                path = self._cache_path(key)
+                if path is None or not path.exists():
+                    to_fetch.append(
+                        (self.render(present, self.questions[q_idx]), q_idx, key)
+                    )
+            plans.append(slots)
+
+        fetched = self._fetch_and_cache(to_fetch) if to_fetch else {}
+        out = []
+        for slots in plans:
+            vals = []
+            for q_idx, key in slots:
+                if self.temperature == 0 and key in self._utility_memo:
+                    vals.append(self._utility_memo[key])
+                    continue
+                if key in fetched:
+                    text = fetched[key]
+                else:
+                    text = json.loads(self._cache_path(key).read_text())["response"]
+                score = self.utility(text, self.questions[q_idx])
+                if self.temperature == 0:
+                    self._utility_memo[key] = score
+                vals.append(score)
+            out.append(np.array(vals, dtype=float))
+        return out
+
     def prime_grid(
         self,
         coalitions: Sequence[Iterable[int]],
