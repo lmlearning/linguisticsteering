@@ -1,0 +1,248 @@
+{
+ "model": "qwen/qwen3.5-9b",
+ "n_segments": 20,
+ "segments": {
+  "expert": "You are an expert in the subject of the question.",
+  "teacher": "You are a patient teacher who values accuracy above all.",
+  "bias_a": "If you are unsure, choose option A.",
+  "confident": "Answer with confidence and commit to a single choice.",
+  "letter_only": "Respond with only the single capital letter of the correct option and nothing else.",
+  "verbose": "Explain your reasoning in full sentences before giving the letter.",
+  "brief": "Keep your answer as brief as possible.",
+  "nopunct": "Do not add any punctuation around your final answer.",
+  "steps": "Think carefully step by step before giving your answer.",
+  "eliminate": "First eliminate the clearly wrong options, then choose among the rest.",
+  "doublecheck": "Double-check your reasoning before answering.",
+  "arithmetic": "Re-check any arithmetic before finalizing your answer.",
+  "weather": "Note that the weather today is sunny with a gentle breeze.",
+  "trivia": "Fun fact: bananas are botanically berries.",
+  "date": "For reference, today is a Tuesday.",
+  "sky": "Note that the sky is generally blue during the day.",
+  "polite": "Maintain a polite and professional tone.",
+  "formal": "Use formal academic language.",
+  "short": "Use short sentences.",
+  "noemoji": "Do not use emojis."
+ },
+ "groups": {
+  "persona": [
+   "expert",
+   "teacher",
+   "bias_a",
+   "confident"
+  ],
+  "format": [
+   "letter_only",
+   "verbose",
+   "brief",
+   "nopunct"
+  ],
+  "reasoning": [
+   "steps",
+   "eliminate",
+   "doublecheck",
+   "arithmetic"
+  ],
+  "junk": [
+   "weather",
+   "trivia",
+   "date",
+   "sky"
+  ],
+  "style": [
+   "polite",
+   "formal",
+   "short",
+   "noemoji"
+  ]
+ },
+ "gold": {
+  "budget": 120000,
+  "values": {
+   "expert": -0.011547666927034465,
+   "teacher": -0.004144132527194933,
+   "bias_a": -0.0014049085167564853,
+   "confident": -0.006827514100799922,
+   "letter_only": 0.01169941928635003,
+   "verbose": 0.10850212756705388,
+   "brief": 0.03273838195216221,
+   "nopunct": 0.02508698451074719,
+   "steps": -0.022401209409775566,
+   "eliminate": -0.003382572427093841,
+   "doublecheck": -0.004988777337839603,
+   "arithmetic": 0.0012923048811957411,
+   "weather": 0.006308575372446425,
+   "trivia": 0.02395427559315752,
+   "date": 0.003394410481690793,
+   "sky": 0.003988492567014508,
+   "polite": -0.0008589696250167394,
+   "formal": -0.0015370973673854275,
+   "short": 0.04149661052617535,
+   "noemoji": -0.00011479283510340277
+  },
+  "lower": {
+   "expert": -0.08924999999999997,
+   "teacher": -0.08874999999999993,
+   "bias_a": -0.08674999999999991,
+   "confident": -0.08424999999999996,
+   "letter_only": -0.07124999999999997,
+   "verbose": 0.02950000000000011,
+   "brief": -0.04899999999999992,
+   "nopunct": -0.05449999999999995,
+   "steps": -0.10774999999999994,
+   "eliminate": -0.08449999999999996,
+   "doublecheck": -0.08974999999999991,
+   "arithmetic": -0.08274999999999996,
+   "weather": -0.07024999999999998,
+   "trivia": -0.05649999999999995,
+   "date": -0.07524999999999994,
+   "sky": -0.07674999999999993,
+   "polite": -0.08199999999999996,
+   "formal": -0.08074999999999997,
+   "short": -0.03974999999999995,
+   "noemoji": -0.08474999999999995
+  },
+  "upper": {
+   "expert": 0.07299999999999997,
+   "teacher": 0.07724999999999993,
+   "bias_a": 0.07524999999999994,
+   "confident": 0.07674999999999994,
+   "letter_only": 0.09299999999999989,
+   "verbose": 0.19149999999999995,
+   "brief": 0.11549999999999994,
+   "nopunct": 0.10599999999999991,
+   "steps": 0.05824999999999991,
+   "eliminate": 0.08099999999999993,
+   "doublecheck": 0.07274999999999995,
+   "arithmetic": 0.08274999999999992,
+   "weather": 0.09224999999999994,
+   "trivia": 0.1074999999999999,
+   "date": 0.08774999999999991,
+   "sky": 0.08724999999999991,
+   "polite": 0.08149999999999993,
+   "formal": 0.08149999999999993,
+   "short": 0.12374999999999989,
+   "noemoji": 0.07749999999999993
+  }
+ },
+ "comparison": [
+  {
+   "estimator": "cc_bernstein",
+   "budget": 30000,
+   "calls": 30000,
+   "linf_vs_gold": 0.013426594332385244,
+   "kendall_vs_gold": 0.768421052631579,
+   "mean_ci_width": 0.2908999999999998,
+   "consistent_with_gold": true,
+   "cost_usd": 0.0,
+   "minutes": 0.10606621503829956
+  },
+  {
+   "estimator": "surrogate_cc",
+   "budget": 30000,
+   "calls": 30000,
+   "linf_vs_gold": 0.020964821135079602,
+   "kendall_vs_gold": 0.5473684210526316,
+   "mean_ci_width": 0.3543987333803554,
+   "consistent_with_gold": true,
+   "cost_usd": 0.0,
+   "minutes": 0.1232604742050171
+  },
+  {
+   "estimator": "kernel_shap",
+   "budget": 30000,
+   "calls": 30000,
+   "linf_vs_gold": 0.0287761097250282,
+   "kendall_vs_gold": 0.6631578947368422,
+   "mean_ci_width": null,
+   "consistent_with_gold": null,
+   "cost_usd": 0.6457713900000028,
+   "minutes": 25.701105546951293
+  },
+  {
+   "estimator": "leverage_shap",
+   "budget": 30000,
+   "calls": 30002,
+   "linf_vs_gold": 0.06773640126185834,
+   "kendall_vs_gold": 0.38947368421052636,
+   "mean_ci_width": null,
+   "consistent_with_gold": null,
+   "cost_usd": 1.15211902000001,
+   "minutes": 26.07829758723577
+  },
+  {
+   "estimator": "svarm",
+   "budget": 30000,
+   "calls": 30000,
+   "linf_vs_gold": 0.05794188566012897,
+   "kendall_vs_gold": 0.5894736842105264,
+   "mean_ci_width": null,
+   "consistent_with_gold": null,
+   "cost_usd": 1.1489643700000078,
+   "minutes": 42.290817602475485
+  }
+ ],
+ "triage": {
+  "tau": 0.1,
+  "budget": 60000,
+  "group_values": {
+   "persona": 0.014369995055017137,
+   "format": 0.19544106485592289,
+   "reasoning": -0.09985219760605575,
+   "junk": 0.04389180401978895,
+   "style": 0.04950077314477015
+  },
+  "group_halfwidths": {
+   "persona": 0.08249999999999993,
+   "format": 0.08099999999999988,
+   "reasoning": 0.07949999999999995,
+   "junk": 0.08149999999999995,
+   "style": 0.08349999999999991
+  },
+  "certified_negligible": [
+   "persona"
+  ],
+  "expanded": [
+   "format",
+   "reasoning",
+   "junk",
+   "style"
+  ],
+  "member_values": {
+   "letter_only": 0.01913499369905923,
+   "verbose": 0.13862638537888128,
+   "brief": 0.0347487103062708,
+   "nopunct": 0.033439178915584636,
+   "steps": -0.07307190593546112,
+   "eliminate": -0.0024689327428626603,
+   "doublecheck": 0.000824274927743892,
+   "arithmetic": -0.01501203792393583,
+   "weather": -0.00025892488180337923,
+   "trivia": 0.008019458152527283,
+   "date": 0.024203728163374412,
+   "sky": 0.013473840033277555,
+   "polite": -0.009936885074480286,
+   "formal": 0.011057105588628258,
+   "short": 0.06152511081125882,
+   "noemoji": -0.01648872887293858
+  },
+  "member_halfwidths": {
+   "letter_only": 0.10249999999999997,
+   "verbose": 0.10062499999999992,
+   "brief": 0.10249999999999991,
+   "nopunct": 0.09999999999999992,
+   "steps": 0.10312499999999997,
+   "eliminate": 0.10437499999999995,
+   "doublecheck": 0.10187499999999995,
+   "arithmetic": 0.10312499999999997,
+   "weather": 0.09999999999999995,
+   "trivia": 0.10312499999999993,
+   "date": 0.10062499999999995,
+   "sky": 0.10124999999999994,
+   "polite": 0.10062499999999992,
+   "formal": 0.10062499999999991,
+   "short": 0.10187499999999995,
+   "noemoji": 0.09749999999999992
+  }
+ },
+ "total_cost_usd": 3.5315902100000236
+}
