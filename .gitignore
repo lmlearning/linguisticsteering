@@ -213,3 +213,4 @@ paper/*.log
 paper/*.out
 paper/build*.log
 paper/kit.zip
+segshap-repro.zip
