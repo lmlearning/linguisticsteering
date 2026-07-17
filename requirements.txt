@@ -1,0 +1,9 @@
+# Pinned to the versions used to produce the committed results.
+# Newer minor versions are generally fine; shapiq provides the SVARM baseline.
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.9.0
+pandas==3.0.3
+shapiq==1.4.1
+openai==2.45.0          # only needed for live LLM experiments (T1–T4)
+pytest>=8               # test suite
