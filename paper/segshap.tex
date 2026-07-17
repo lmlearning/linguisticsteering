@@ -526,6 +526,18 @@ lower-noise task the provable baselines' \emph{point} error is competitive, but
 they return no interval and therefore cannot certify any clause as load-bearing.
 Certification, not point accuracy, is the operative capability for an audit.
 
+\paragraph{The certification replicates across model families.} On Gemma-4 the
+same defense is certified, but the attribution reveals a different internal
+structure: a single clause (\texttt{guard\_untrusted}, $\shap=+0.69$, CI
+$[+0.50,+0.81]$) carries the defense, and the other two defensive clauses are
+\emph{redundant substitutes}---individually not certified because their marginal
+contribution given \texttt{guard\_untrusted} is small (empty prompt $0.00$,
+defensive group alone already $1.00$). This is the correct Shapley reading and a
+feature, not a failure: marginal attribution exposes redundancy, and it is why
+the safety-relevant statement is made at the \emph{group} (Owen) level, where
+the defensive group is certified load-bearing on both models. The same
+substitutability appeared for reasoning instructions in T2.
+
 \begin{table}[t]
 \centering\small
 \caption{T4 (alignment), Qwen3.5-9B, exact resistance-Shapley and certified
@@ -549,14 +561,38 @@ expert                   & control   & $-0.028$ & $[-0.14,+0.18]$ \\
 \end{table}
 
 \paragraph{Safe pruning in both directions.} The triage realizes
-Thm.~\ref{thm:safe} on real models. On T3 it \emph{certifies removal}: the
-persona group (true Owen value $+0.014$, well inside $\tau{=}0.1$) is certified
-negligible and pruned. On T4 it demonstrates the fail-safe direction: the
-defensive group (value $+0.87$) is never certified removable, and at the audit
-budget the triage \emph{declines} to prune the borderline control groups rather
-than risk a false elimination. A compression pass driven by \textsc{Owen-Elim}
-thus removes provably-inert clauses while, with probability $\ge1-\delta$, never
-stripping a group that carries the safety behavior.
+Thm.~\ref{thm:safe} on real models and on the safety task itself
+(Table~\ref{tab:triage}). On Gemma-4's injection task it prunes correctly:
+the two control groups (\emph{format}, \emph{style}; true Owen values
+$0.006$ and $0.002$) are \emph{certified removable}, while the defensive group
+(value $1.00$) is kept. On Qwen the same defensive group is likewise never
+certified removable; at that model's higher decision uncertainty the triage
+fail-safes on the borderline control groups (declines to prune) rather than
+risk a false elimination. A compression pass driven by \textsc{Owen-Elim} thus
+strips provably-inert clauses while, with probability $\ge1-\delta$, never
+removing a group that carries the safety behavior---exactly the guarantee a
+prompt-optimization pipeline needs to be trusted around a safety mitigation.
+
+\begin{table}[t]
+\centering\small
+\caption{Certified safe-pruning triage on the T4 injection task
+($\tau{=}0.1$, betting certificates), two model families. The defensive group
+is never certified removable; genuinely inert control groups are.}
+\label{tab:triage}
+\begin{tabular}{llcc}
+\toprule
+model & group & Owen value & verdict \\
+\midrule
+Gemma-4 & defensive & $+1.00$ & kept \\
+Gemma-4 & format    & $+0.006$ & \textbf{certified removable} \\
+Gemma-4 & style     & $+0.002$ & \textbf{certified removable} \\
+\midrule
+Qwen3.5 & defensive & $+0.87$ & kept \\
+Qwen3.5 & format    & $+0.058$ & kept (fail-safe) \\
+Qwen3.5 & style     & $+0.052$ & kept (fail-safe) \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \paragraph{Certifying a harmful instruction (T1).} In T1 the planted sabotage
 instruction has exact $\shap=-0.43$, and \textsc{CC-Bet} at $8$k calls certifies
