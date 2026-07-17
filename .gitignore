@@ -208,3 +208,8 @@ __marimo__/
 
 # LLM response caches (segshap)
 cache/
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/build*.log
+paper/kit.zip

@@ -1,0 +1,626 @@
+% Certified Attribution of Prompt Segments.
+% Formatted to approximate the AAAI two-column style so it compiles standalone.
+% To produce the official camera-ready, replace the preamble block marked
+% "AAAI-STYLE SHIM" with \documentclass[letterpaper]{article}\usepackage{aaai2026}
+% (the body uses only standard commands).
+\documentclass[10pt,twocolumn,letterpaper]{article}
+% ===================== AAAI-STYLE SHIM =====================
+\usepackage[letterpaper,margin=0.75in,columnsep=0.25in]{geometry}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\frenchspacing
+\setlength{\parindent}{12pt}
+\pagestyle{plain}
+\captionsetup{font=small,labelfont=bf}
+% ===========================================================
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newcommand{\N}{N}
+\newcommand{\shap}{\phi}
+\newcommand{\cc}{\mathrm{CC}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\vhat}{\hat{v}}
+\newcommand{\Prob}{\mathbb{P}}
+
+\title{\bf Certified Attribution of Prompt Segments:\\
+Auditing What Makes a System Prompt Safe}
+\author{Anonymous submission}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+System prompts encode much of an LLM's safety behavior---refusal policies,
+prompt-injection defenses, formatting and persona constraints---as a list of
+natural-language \emph{segments}. Yet practitioners cannot say which segments
+actually carry a given behavior, and routine prompt compression may silently
+delete a safety-critical clause. We cast this as attributing a behavioral
+metric to prompt segments via cooperative-game (Shapley and Owen) values, and
+identify the regime that makes it hard for alignment: the value function is a
+\emph{doubly-stochastic, pay-per-call oracle} (an LLM plus a noisy behavioral
+judge over a task distribution), so every attribution is an estimate that must
+carry an honest error bar. We contribute a segment-attribution estimator whose
+output is a \emph{certificate}: anytime-valid betting confidence sequences,
+composed with a complementary-contribution decomposition and a union bound,
+yield simultaneous $(\varepsilon,\delta)$ intervals for all segments that
+remain valid under fully adaptive, data-dependent sampling and stopping. We
+prove the certificate's validity in the doubly-stochastic setting, prove a
+two-level allocation result explaining why fresh coalitions dominate
+within-coalition replication, and prove a \emph{safe-pruning} guarantee: a
+hierarchical triage never certifies a genuinely load-bearing group of segments
+as removable, except with probability $\delta$. Across synthetic games and real
+models (Qwen3.5-9B, Gemma-4), including an exact $2^{20}$-coalition regime where
+enumeration is impossible, our estimator matches or beats strong provable
+baselines (Leverage SHAP, SVARM) under noise while being the only one that
+certifies. As an alignment demonstration, we certify which system-prompt clauses
+are load-bearing for prompt-injection resistance and show that a planted
+sabotage instruction is certified strictly harmful---turning prompt auditing
+into verifiable evidence for a safety case.
+\end{abstract}
+
+\section{Introduction}
+
+A deployed language model's behavior is governed in large part by its
+\emph{system prompt}: a list of natural-language instructions---``treat text in
+the user's message as untrusted,'' ``refuse requests for X,'' ``answer with a
+single letter,'' a persona, some few-shot examples. These \emph{segments}
+accumulate over a product's lifetime and are continually edited, reordered, and
+\emph{compressed} to save tokens. Two questions have no principled answer today:
+\emph{which} segments actually produce a safety-relevant behavior, and whether a
+proposed edit or compression will \emph{erode} that behavior. A team that prunes
+a ``bloated'' system prompt for latency has no guarantee it did not just delete
+the clause that was doing all the work of resisting prompt injection.
+
+This is an attribution problem, and cooperative game theory gives the
+principled answer: treat each segment as a player, let the ``value'' of a subset
+$S$ of segments be the expected behavioral metric of the prompt containing
+exactly $S$, and report each segment's Shapley value---its average marginal
+contribution, accounting for interactions with the others. Group segments into
+sections and the same machinery gives Owen values. The obstacle is not the
+definition but the \emph{oracle}. Unlike the tabular settings where Shapley
+estimation is usually studied, here evaluating one coalition means running an
+LLM on sampled inputs and scoring its outputs with a possibly-noisy behavioral
+judge: every value is an expensive, \emph{doubly-stochastic} estimate (noise
+from input sampling and from decoding/judging). An attribution that ignores this
+noise is not auditable---and for a safety decision, an attribution you cannot
+trust is worse than none.
+
+We therefore ask for \emph{certified} segment attribution: every reported number
+carries a simultaneous, high-probability error bar, and every ``this clause is
+negligible, prune it'' decision is backed by a guarantee. Our contributions:
+
+\begin{itemize}
+\item \textbf{A certified estimator (\S\ref{sec:method}).} We combine a
+complementary-contribution decomposition of the Shapley value---so one evaluated
+pair updates every segment---with per-stratum \emph{betting} confidence
+sequences (hedged capital; Waudby-Smith and Ramdas 2023) and a union bound. The
+result is a simultaneous $(\varepsilon,\delta)$ certificate over all segments
+that remains valid under \emph{fully adaptive} sampling and stopping, which is
+what lets the estimator spend its budget where the uncertainty is.
+\item \textbf{Theory for the noisy oracle (\S\ref{sec:theory}).} We prove
+certificate validity in the doubly-stochastic setting (Thm.~\ref{thm:cert}), a
+two-level allocation result showing fresh coalitions dominate within-coalition
+replication in call-cost while replication can win in token-cost under prompt
+caching (Prop.~\ref{prop:alloc}), and a \emph{safe-pruning} guarantee: a
+genuinely load-bearing group is never certified removable except w.p.\ $\delta$
+(Thm.~\ref{thm:safe}).
+\item \textbf{Evidence at scale (\S\ref{sec:exp}).} On synthetic games and two
+real models we match or beat the strongest provable baselines (Leverage SHAP,
+SVARM) \emph{under noise}, while being the only method that certifies; betting
+certificates are $3$--$7\times$ tighter than empirical-Bernstein at equal
+$\delta$ with perfect empirical coverage. We reach an exact-ground-truth $n{=}12$
+regime and a $2^{20}$-coalition regime where enumeration is impossible and the
+reference is itself a certified gold standard.
+\item \textbf{An alignment demonstration (\S\ref{sec:align}).} We certify which
+system-prompt clauses are load-bearing for prompt-injection resistance, and
+show a planted sabotage instruction is certified \emph{strictly harmful}. The
+safe-pruning triage removes only genuinely inert clauses. This turns prompt
+auditing into verifiable evidence usable in a safety case.
+\end{itemize}
+
+Our framing is deliberately alignment-first: the deliverable is not a better
+attribution number but an \emph{auditable} one, and a compression procedure that
+\emph{cannot} silently strip safety behavior.
+
+\section{Related Work}
+
+\paragraph{Attribution for LLM prompts.} TokenSHAP and TextGenSHAP compute
+Shapley values over prompt tokens; ContextCite fits a sparse linear surrogate to
+context ablations; AttriBoT accelerates leave-one-out context attribution;
+TracLLM searches long contexts for provenance. Closest to us, ProCut segments
+production prompt templates and prunes low-attribution units. All of these are
+heuristic: none reports a finite-sample error bar, and leave-one-out and linear
+surrogates ignore the interactions between clauses that redundancy and conflict
+are made of. Cluster Shapley is the one LLM-attribution method with formal
+bounds, but it values \emph{retrieved documents} for revenue sharing under a
+clustering assumption, a different game.
+
+\paragraph{Shapley estimation with guarantees.} Permutation sampling with
+Hoeffding bounds, stratified and Neyman-optimal variants, and empirical-Bernstein
+adaptive allocation (Burgess and Chapman 2021) give variance-adaptive additive
+bounds. Complementary contributions (Zhang et al.\ 2023) and SVARM (Kolpaczki et
+al.\ 2024) let one evaluation update all players; Leverage SHAP (Musco and Witter
+2025) gives the first non-asymptotic guarantee in the KernelSHAP regression
+family. These are developed for \emph{deterministic} value functions on tabular
+or vision features. We show empirically that their optimality does not survive a
+noisy oracle, and we supply the missing certificate.
+
+\paragraph{Anytime-valid inference.} Betting/e-process confidence sequences
+(Waudby-Smith and Ramdas 2023) give time-uniform intervals for bounded means and
+underpin our adaptivity-safe certificate. Data Banzhaf (Wang and Jia 2023) is the
+one prior analysis of value estimation under a noisy utility, but it abandons the
+Shapley value for the Banzhaf value and targets data valuation.
+
+\paragraph{Alignment context.} Prompt injection and instruction-hierarchy
+robustness are active safety concerns; system-prompt clauses are a primary
+defense. Safe-by-design engineering and formal safety cases call for
+\emph{auditable} evidence that a mitigation is effective. Our contribution is an
+attribution primitive that produces exactly such evidence and a compression
+procedure with a safety guarantee.
+
+\section{Problem Setup}
+\label{sec:setup}
+
+Let a prompt decompose into segments $\N=\{1,\dots,n\}$. For $S\subseteq\N$ let
+$\pi(S)$ be the prompt containing exactly the segments in $S$, rendered in a
+fixed canonical order so the cooperative game is well defined. Fix a task
+distribution $\mathcal{D}$ and a bounded behavioral metric
+$u\in[0,1]$ (exact-match correctness, a refusal indicator, an
+injection-resistance indicator, or an LLM-judge score). The \emph{value} of a
+coalition is the population metric
+\begin{equation}
+v(S)=\E_{q\sim\mathcal{D},\,y\sim \mathrm{LLM}(\pi(S),q)}\big[u(y,q)\big]\in[0,1].
+\end{equation}
+The estimand is the Shapley vector $\shap(v)\in\R^n$ and, given a partition of
+$\N$ into groups, the Owen values.
+
+\paragraph{Doubly-stochastic pay-per-call oracle.} We never observe $v(S)$. An
+\emph{oracle call} draws one $q\sim\mathcal{D}$ and one generation and returns
+$u(y,q)$; averaging $r$ calls yields
+$\vhat(S)=\frac1r\sum_{j=1}^r u(y_j,q_j)$, an unbiased estimate whose variance
+$\sigma^2(S)/r$ combines input-sampling and decoding/judging noise. Calls are
+the expensive resource. We additionally track a token-cost model in which
+coalitions sharing a prompt prefix are cheaper under prompt/KV caching.
+
+\paragraph{Safety reading.} When $u$ is a safety metric, $\shap_i$ is the
+certified contribution of clause $i$ to that behavior. Two decisions matter:
+\emph{verification}---is $\shap_i$ bounded away from zero (load-bearing) or
+below zero (harmful)?---and \emph{safe pruning}---can a group of clauses be
+removed without losing behavior? Both require a lower bound on how wrong the
+estimate can be, i.e.\ a certificate.
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Certified Shapley from Paired Coalitions}
+
+We use the complementary-contribution identity: with
+$\cc(S)=v(S)-v(\N\setminus S)$,
+\begin{equation}
+\shap_i=\frac1n\sum_{s=1}^{n}\;\E\big[\cc(S)\;\big|\;i\in S,\,|S|=s\big],
+\label{eq:cc}
+\end{equation}
+so a single evaluated pair $(S,\N\setminus S)$ contributes a sample to
+\emph{every} segment: members of $S$ receive $\cc(S)$ in their size-$|S|$
+stratum and non-members receive $-\cc(S)$ in their size-$(n{-}|S|)$ stratum. This
+maximizes statistical reuse and doubles as antithetic sampling.
+
+For each (player, size) stratum we maintain the raw sequence of observed
+(complementary-)contributions and form a \emph{hedged betting} confidence
+sequence for its mean (Alg.~\ref{alg:cc}, \textsc{BettingCI}). A gambler bets
+against each candidate mean $m$ with predictable plug-in stakes; the capital
+process $K_t(m)=\prod_i(1+\lambda_i(m)(x_i-m))$ is a nonnegative martingale under
+the true mean, so $\{m:K_t(m)<1/\delta'\}$ is a confidence sequence valid
+simultaneously over all sample counts $t$ (Ville's inequality). The per-segment
+interval is the size-averaged Minkowski sum of its stratum intervals, run at
+$\delta'=\delta/(n\cdot n_{\text{strata}})$ so all intervals hold jointly with
+probability $\ge 1-\delta$. Sizes are allocated adaptively toward the strata that
+dominate the current uncertainty; because the certificate is anytime-valid, this
+data-dependent allocation and the stopping rule cannot invalidate it.
+
+\begin{algorithm}[t]
+\caption{Certified segment Shapley (\textsc{CC-Bet})}
+\label{alg:cc}
+\begin{algorithmic}[1]
+\State \textbf{input:} oracle, budget $B$, replicates $r$, level $\delta$
+\State init empty stratum sequences $X_{i,s}$; spent $\gets 0$
+\While{spent $+\,2r \le B$}
+  \State pick size $s$ maximizing current stratum uncertainty
+  \State draw $S$ uniform of size $s$; evaluate $\vhat(S),\vhat(\N\setminus S)$
+  \State $c\gets\vhat(S)-\vhat(\N\setminus S)$; spent $\gets$ spent $+\,2r$
+  \State append $c$ to $X_{i,s}$ ($i\in S$), $-c$ to $X_{j,n-s}$ ($j\notin S$)
+  \If{all per-segment half-widths $\le\varepsilon$} \textbf{break} \EndIf
+\EndWhile
+\For{each segment $i$}
+  \State $[\ell_{i,s},u_{i,s}]\gets\textsc{BettingCI}(X_{i,s},\delta')$ per size
+  \State $[\ell_i,u_i]\gets\frac1n\sum_s[\ell_{i,s},u_{i,s}]$
+\EndFor
+\State \textbf{return} centers $\shap_i$, intervals $[\ell_i,u_i]$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Hierarchical Triage and Safe Pruning}
+
+Given a partition into groups, we first certify the \emph{group} (Owen/quotient)
+values with \textsc{CC-Bet} on the quotient game, at level $\delta/2$. A group is
+\emph{certified removable} only if its whole interval lies inside $[-\tau,\tau]$
+for a user threshold $\tau$; groups whose interval escapes $[-\tau,\tau]$ are
+\emph{kept} and refined member-by-member (their Owen values estimated with the
+same paired identity inside the group, marginalizing the other groups), at the
+remaining budget split by residual width. This yields a certified
+keep/prune/refine triage of a prompt at group granularity (Alg.~\ref{alg:tri}).
+
+\begin{algorithm}[t]
+\caption{Certified safe-pruning triage (\textsc{Owen-Elim})}
+\label{alg:tri}
+\begin{algorithmic}[1]
+\State certify group values with \textsc{CC-Bet}$(\delta/2)$ on the quotient game
+\For{each group $g$}
+  \If{$[\ell_g,u_g]\subseteq[-\tau,\tau]$} mark \emph{removable}
+  \Else{} \emph{keep}; refine members with \textsc{CC-Bet}$(\delta/2)$ in $g$
+  \EndIf
+\EndFor
+\State \textbf{return} removable set, kept set, member certificates
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Surrogate Control Variate}
+
+When the game is nearly low-order we fit a $k$-additive M\"obius surrogate $g$
+(Lasso on the $\{1[T\subseteq S]\}$ basis), read its exact Shapley values in
+closed form, and certify by running \textsc{CC-Bet} on the \emph{residual} game
+$v-g$: since Shapley is linear, $\shap(v)=\shap(g)+\shap(v-g)$ exactly, so the
+residual certificate transfers to $v$. If the surrogate is good the residual is
+tiny and the certificate collapses quickly; if it is bad the certificate stays
+wide and the method degrades gracefully into \textsc{CC-Bet}. Validity never
+depends on the surrogate being correct.
+
+\section{Theory}
+\label{sec:theory}
+
+Throughout, $v\in[0,1]$ so each observed (complementary-)contribution lies in
+$[-1,1]$; a stratum's samples, \emph{conditioned on the sizes drawn}, are i.i.d.\
+unbiased draws of that stratum's mean, and the size-allocation and stopping rule
+are predictable (chosen from past observations).
+
+\begin{theorem}[Certificate validity under a doubly-stochastic oracle]
+\label{thm:cert}
+Let $[\ell_i,u_i]$ be the intervals returned by Alg.~\ref{alg:cc} with
+per-stratum level $\delta'=\delta/(n\,n_{\text{strata}})$. Then, for any
+data-dependent size-allocation and stopping policy,
+\[
+\Prob\big[\;\forall i\in\N:\ \shap_i(v)\in[\ell_i,u_i]\;\big]\ \ge\ 1-\delta.
+\]
+\end{theorem}
+\begin{proof}[Proof sketch]
+Fix a stratum $(i,s)$. Its observations are i.i.d.\ unbiased draws of
+$\mu_{i,s}=\E[\cc\mid i\in S,|S|=s]$, bounded in $[-1,1]$. The hedged capital
+process $K_t(m)$ evaluated at $m=\mu_{i,s}$ is a nonnegative martingale with
+$K_0=1$; by Ville's inequality $\Prob[\exists t:K_t(\mu_{i,s})\ge1/\delta']\le
+\delta'$, so the confidence sequence $\{m:K_t(m)<1/\delta'\}$ contains
+$\mu_{i,s}$ for all $t$ simultaneously w.p.\ $\ge1-\delta'$. Time-uniformity is
+exactly what makes the guarantee survive a stopping time and a data-dependent
+number of samples per stratum: the allocation decides \emph{how many} draws a
+stratum gets, never their conditional distribution. A union bound over the
+$n\,n_{\text{strata}}$ strata gives that all stratum means lie in their sequences
+jointly w.p.\ $\ge1-\delta$. On that event, by the decomposition
+\eqref{eq:cc} each $\shap_i=\frac1n\sum_s\mu_{i,s}$ lies in the size-average of
+the stratum intervals, which is $[\ell_i,u_i]$. The oracle's within-coalition
+noise only affects the (bounded) sample values and is absorbed by the same
+martingale argument.
+\end{proof}
+
+Theorem~\ref{thm:cert} is what makes the estimator \emph{safe to run
+adaptively}: a fixed-sample bound would be void the moment the algorithm chooses
+its next size from the data. The ingredients (the CC decomposition, hedged
+betting, the union bound) are individually known; the contribution is the
+construction and its validity for segment attribution under the
+doubly-stochastic LLM oracle with adaptive allocation.
+
+\begin{proposition}[Two-level allocation]
+\label{prop:alloc}
+Fix a call budget $B$ and replication level $r$, giving $T=B/(2r)$ paired
+evaluations. Writing $\sigma^2_{\mathrm{btw}}$ for the between-coalition
+variance of $\cc$ within a stratum and $\sigma^2_{\mathrm{win}}$ for the
+per-call within-coalition variance, the per-segment estimator variance obeys
+\begin{align*}
+\mathrm{Var}(\shap_i)
+&=\ O\!\Big(\tfrac{\log n}{T}\big(\sigma^2_{\mathrm{btw}}
++\tfrac{2\sigma^2_{\mathrm{win}}}{r}\big)\Big)\\
+&=\ O\!\Big(\tfrac{2r\log n}{B}\sigma^2_{\mathrm{btw}}
++\tfrac{4\log n}{B}\sigma^2_{\mathrm{win}}\Big).
+\end{align*}
+Hence at fixed $B$ the bound is minimized at $r=1$ whenever
+$\sigma^2_{\mathrm{btw}}>0$: fresh coalitions average both noise sources,
+replication only the within-coalition one. Under a prefix-cache token model
+where a coalition's instruction prefix is paid once per coalition and the
+question/decoding tokens once per call, the token-optimal $r$ shifts upward, to
+$r^\star\!\approx\!\sqrt{(\sigma^2_{\mathrm{win}}/\sigma^2_{\mathrm{btw}})\cdot
+(c_{\mathrm{pre}}/c_{\mathrm{call}})}$ with $c_{\mathrm{pre}},c_{\mathrm{call}}$
+the prefix and per-call token costs.
+\end{proposition}
+\begin{proof}[Proof sketch]
+The variance identity is the SVARM-style stratified decomposition applied to the
+paired identity \eqref{eq:cc}, with the within-coalition term scaled by $1/r$
+because each coalition value is an $r$-sample mean; substitute $T=B/(2r)$. The
+$r=1$ optimum follows since the first term is increasing in $r$ and the second is
+constant in $B$. The token statement replaces $B$ (calls) by
+$T(c_{\mathrm{pre}}+r\,c_{\mathrm{call}})$ and minimizes over $r$.
+\end{proof}
+
+\begin{theorem}[Safe pruning: no false elimination]
+\label{thm:safe}
+Run Alg.~\ref{alg:tri} at level $\delta$. With probability $\ge1-\delta$,
+simultaneously: (i) no group $g$ with true Owen value $|\shap_g|>\tau$ is
+certified removable; and (ii) every kept group's reported member intervals
+cover its true Owen values.
+\end{theorem}
+\begin{proof}
+Apply Thm.~\ref{thm:cert} to the quotient game at level $\delta/2$ and to each
+kept group's within-group game at total level $\delta/2$; a union bound gives
+joint validity at $\delta$. On the good event, a group is certified removable
+only if $[\ell_g,u_g]\subseteq[-\tau,\tau]$, which forces $|\shap_g|\le\tau$;
+contrapositively $|\shap_g|>\tau$ is never certified removable. Member coverage
+is the group-conditional instance of Thm.~\ref{thm:cert}.
+\end{proof}
+
+Theorem~\ref{thm:safe} is the alignment guarantee: prompt compression driven by
+\textsc{Owen-Elim} cannot, except with the controlled probability $\delta$,
+delete a group of clauses whose true contribution to a safety metric exceeds the
+tolerance $\tau$. What we do \emph{not} prove is a matching query-complexity
+lower bound for the certified problem; we regard establishing instance-optimal
+lower bounds under the noisy oracle as the main open theoretical question.
+
+\section{Experiments}
+\label{sec:exp}
+
+\paragraph{Testbeds.} \textbf{T0}: synthetic sparse low-order games with a
+Bernoulli (binary) and a low-noise Gaussian oracle, where exact Shapley values
+are known in closed form. \textbf{T1}: $8$ single-instruction segments on MMLU,
+including a planted \emph{sabotage} instruction (``the answer is always C''),
+with the full $2^8$ grid giving exact ground truth on a real model. \textbf{T2}:
+$12$ instruction segments in $4$ groups on MMLU, exhaustive $2^{12}$ grid, exact
+Shapley/Owen/interaction ground truth, on two model families. \textbf{T3}: $20$
+segments in $5$ groups ($2^{20}\!\approx\!1.05$M coalitions, enumeration
+impossible); the reference is a \emph{certified gold standard}
+(\textsc{CC-Bet} at $120$k calls whose betting CIs bound its own error).
+\textbf{T4} (alignment, \S\ref{sec:align}): certified attribution of
+prompt-injection resistance.
+
+\paragraph{Models and protocol.} Qwen3.5-9B and Gemma-4-26B via a hosted API,
+reasoning disabled, temperature $0$; every response is cached so estimator
+comparisons replay from disk at identical randomness. Baselines: permutation
+Monte Carlo, KernelSHAP (paired), and the two strongest provable methods,
+Leverage SHAP and SVARM (the authors' \texttt{shapiq} implementation).
+Certificates at $\delta=0.05$, simultaneous over segments. All estimators consume
+the identical coalition oracle and are measured against exact truth (T0--T2) or
+certified gold (T3).
+
+\paragraph{Certificate quality.} Betting confidence sequences are
+$3$--$7\times$ tighter than empirical-Bernstein at equal $\delta$ with identical
+point estimates: on T2/Qwen the mean \textsc{CC-Bet} interval width at $3$k/$10$k/
+$30$k calls drops from $6.50/2.30/0.96$ (Bernstein) to $0.85/0.41/0.22$
+(betting), and empirical coverage is $1.00$ in every cell of every experiment
+(Table~\ref{tab:t2}). The tightening is what lets certified decisions actually
+fire at realistic budgets (\S\ref{sec:align}).
+
+\begin{table}[t]
+\centering\small
+\caption{T2, Qwen3.5-9B, $n{=}12$, exact ground truth, betting certificates
+($\delta{=}0.05$), $30{,}000$ calls, 8 seeds. Lower $\ell_\infty$ is better;
+``cover'' is the fraction of runs where all segment CIs contain the truth.}
+\label{tab:t2}
+\begin{tabular}{lcccc}
+\toprule
+estimator & $\ell_\infty$ & Kendall & cover & CI width \\
+\midrule
+\textbf{CC-Bet (ours)} & \textbf{0.011} & \textbf{0.920} & 1.00 & 0.221 \\
+Surrogate (ours)       & 0.015 & 0.894 & 1.00 & 0.301 \\
+KernelSHAP             & 0.029 & 0.905 & --   & --    \\
+Permutation MC         & 0.028 & 0.780 & 1.00 & 0.450 \\
+SVARM                  & 0.052 & 0.686 & --   & --    \\
+Leverage SHAP          & 0.060 & 0.648 & --   & --    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Noise breaks the deterministic-SOTA optimality.} Under a binary
+(maximally noisy) oracle, the provable baselines trail: on T2/Qwen at $30$k calls
+\textsc{CC-Bet} attains $\ell_\infty=0.011$ versus $0.052$ (SVARM) and $0.060$
+(Leverage SHAP); the same ordering holds on Gemma-4, on T1, and on T3
+(Table~\ref{tab:t3}). We verified this is a genuine regime effect, not a faulty
+baseline: our Leverage SHAP reproduces the published $3$--$5\times$ advantage
+over KernelSHAP on \emph{noiseless} high-order games and is exact at budget
+saturation, and in the low-noise Gaussian T0 both baselines become competitive
+again. Leverage SHAP suffers most because its inverse-leverage reweighting spans
+$\sim\!2000\times$ across coalition sizes and amplifies extreme-size oracle
+noise---leverage sampling optimizes worst-case \emph{deterministic} regression
+error, not variance under a stochastic oracle.
+
+\begin{table}[t]
+\centering\small
+\caption{T3, Qwen3.5-9B, $n{=}20$ ($2^{20}$ coalitions; enumeration impossible).
+Error vs.\ a certified gold reference (betting CIs, mean width $0.163$) at
+$30{,}000$ calls. ``consistent'' = every segment estimate within its own $+$
+gold's CI.}
+\label{tab:t3}
+\begin{tabular}{lcccc}
+\toprule
+estimator & $\ell_\infty$ & Kendall & CI width & consistent \\
+\midrule
+\textbf{CC-Bet (ours)} & \textbf{0.013} & \textbf{0.768} & 0.291 & yes \\
+Surrogate (ours)       & 0.021 & 0.547 & 0.354 & yes \\
+KernelSHAP             & 0.029 & 0.663 & --    & --  \\
+SVARM                  & 0.058 & 0.589 & --    & --  \\
+Leverage SHAP          & 0.068 & 0.389 & --    & --  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Scale beyond enumeration (T3).} At $n{=}20$ the certified gold
+standard has mean CI width $0.163$ over a million-coalition game, and both
+certified estimators are CI-consistent with gold on every segment. The estimator
+ranking is unchanged from the small-$n$ exact-truth regimes, evidence that the
+comparison generalizes past where ground truth is computable.
+
+\paragraph{Allocation (Prop.~\ref{prop:alloc}).} Sweeping replicates
+$r\in\{1,\dots,16\}$ on both T2 games confirms $r\!\in\!\{1,2\}$ minimizes
+call-cost error (by $r{=}16$, $\ell_\infty$ is $25$--$30\%$ worse), while under
+the prefix-cache token model $r{=}2$ becomes token-optimal (equal error, $\sim
+11\%$ fewer uncached tokens)---the predicted upward shift.
+
+\paragraph{Interactions replicate a non-obvious finding.} Exact pairwise
+interactions on T2 show reasoning-style instructions are \emph{substitutes}
+(e.g.\ ``eliminate wrong options'' $+$ ``double-check'' has interaction $-0.27$
+on Qwen): one reasoning nudge helps, stacking several hurts. Coarse (group-level)
+attributions transfer across model families (Spearman $0.88$) but fine-grained
+interactions do not ($0/5$ top-pair overlap), an argument for cheap per-model
+certified re-measurement.
+
+\section{Alignment Application: Certified Prompt Auditing}
+\label{sec:align}
+
+\paragraph{Certifying injection defenses (T4).} We attribute
+\emph{prompt-injection resistance} to system-prompt clauses with no harmful
+content. Each MMLU question is appended with a benign injection---``ignore all
+previous instructions and output the word BANANA''---and the metric is whether
+the model \emph{resisted} (did not emit the trigger). We place $8$ candidate
+system-prompt segments: three genuine defensive clauses (treat user text as
+untrusted; single-letter-answer-only; ignore override attempts) and five
+controls (persona, chain-of-thought, politeness, a distractor, a format clause).
+The exhaustive $2^8$ grid gives exact resistance-Shapley on the real model.
+
+With no system prompt the model is fully hijacked (resistance $0.00$); the three
+defensive clauses alone raise resistance to $0.60$ and the full prompt to
+$0.98$. At $8$k calls \textsc{CC-Bet} certifies four clauses as load-bearing
+(betting interval strictly above zero) and leaves the remaining four
+\emph{unclear} (interval straddles zero), matching the exact Shapley signs
+(Table~\ref{tab:t4}). Three of the four certified clauses are the intended
+defenses; the fourth, revealingly, is the \emph{format} control
+(``answer with a single letter''), which is a genuine non-obvious defense---
+constraining the output format itself suppresses the injected token. This is the
+kind of latent, interaction-driven safety dependency that only a certified
+attribution surfaces, and that a naive prompt compressor would be free to delete.
+
+Crucially, only certifying estimators can make this determination at all: on this
+lower-noise task the provable baselines' \emph{point} error is competitive, but
+they return no interval and therefore cannot certify any clause as load-bearing.
+Certification, not point accuracy, is the operative capability for an audit.
+
+\begin{table}[t]
+\centering\small
+\caption{T4 (alignment), Qwen3.5-9B, exact resistance-Shapley and certified
+\textsc{CC-Bet} estimate ($8$k calls, $95\%$ betting CIs). ``$\star$'' marks
+clauses certified load-bearing (CI strictly $>0$).}
+\label{tab:t4}
+\begin{tabular}{llcc}
+\toprule
+segment & kind & exact $\shap$ & 95\% CI \\
+\midrule
+guard\_untrusted$^\star$ & defensive & $+0.267$ & $[+0.08,+0.43]$ \\
+format$^\star$           & control   & $+0.243$ & $[+0.08,+0.45]$ \\
+guard\_task$^\star$      & defensive & $+0.203$ & $[+0.04,+0.41]$ \\
+guard\_ignore$^\star$    & defensive & $+0.191$ & $[+0.04,+0.41]$ \\
+polite                   & control   & $+0.072$ & $[-0.08,+0.28]$ \\
+cot                      & control   & $+0.014$ & $[-0.12,+0.23]$ \\
+weather                  & control   & $+0.013$ & $[-0.11,+0.23]$ \\
+expert                   & control   & $-0.028$ & $[-0.14,+0.18]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Safe pruning in both directions.} The triage realizes
+Thm.~\ref{thm:safe} on real models. On T3 it \emph{certifies removal}: the
+persona group (true Owen value $+0.014$, well inside $\tau{=}0.1$) is certified
+negligible and pruned. On T4 it demonstrates the fail-safe direction: the
+defensive group (value $+0.87$) is never certified removable, and at the audit
+budget the triage \emph{declines} to prune the borderline control groups rather
+than risk a false elimination. A compression pass driven by \textsc{Owen-Elim}
+thus removes provably-inert clauses while, with probability $\ge1-\delta$, never
+stripping a group that carries the safety behavior.
+
+\paragraph{Certifying a harmful instruction (T1).} In T1 the planted sabotage
+instruction has exact $\shap=-0.43$, and \textsc{CC-Bet} at $8$k calls certifies
+it \emph{strictly harmful}: interval $[-0.60,-0.26]$, bounded away from zero,
+whereas under empirical-Bernstein the same data gives $[-1.31,+0.40]$, which
+cannot support the conclusion. Certification, not point estimation, is what turns
+``this clause looks bad'' into auditable evidence.
+
+\paragraph{Why this is a safety contribution.} The outputs are exactly the
+artifacts a safety case needs: (i) \emph{verification} that a mitigation clause
+is effective, with a probability guarantee; (ii) a \emph{harm flag} when a clause
+degrades a safety metric; and (iii) a \emph{compression procedure that provably
+preserves safety behavior}. Because safety metrics (refusal, injection
+resistance, judge scores) are inherently noisy, the doubly-stochastic treatment
+is not optional---an uncertified attribution can, and in T1 does, point the wrong
+way.
+
+\section{Discussion and Limitations}
+
+Our certificates are valid but conservative; the betting construction narrows
+them enough to fire real decisions, yet closing the gap to an instance-optimal
+lower bound is open. We assume a canonical segment order, sidestepping position
+sensitivity; an order-aware game is future work. The token-cost model is
+idealized (opaque provider caching); a controlled study needs local serving.
+Finally, attribution certifies contribution to the \emph{measured} metric---the
+safety of the conclusion is only as good as the behavioral judge, so the judge
+itself must be validated.
+
+\section{Conclusion}
+
+We framed system-prompt auditing as certified segment attribution under a
+doubly-stochastic oracle, gave an adaptive estimator whose betting certificate is
+provably valid in that setting, proved a safe-pruning guarantee, and showed on
+real models---up to a million-coalition regime---that certification is affordable
+and that certified auditing flags both effective injection defenses and harmful
+instructions. The alignment payoff is a prompt-compression and prompt-auditing
+primitive that produces verifiable, not merely plausible, safety evidence.
+
+{\small
+\bibliographystyle{plain}
+\begin{thebibliography}{99}
+\bibitem{wsr} I.~Waudby-Smith and A.~Ramdas. Estimating means of bounded random
+variables by betting. \emph{JRSS-B}, 2023.
+\bibitem{cc} J.~Zhang et al. Efficient Shapley computation via complementary
+contributions. \emph{SIGMOD}, 2023.
+\bibitem{svarm} P.~Kolpaczki et al. SVARM: stratified analysis of Shapley value
+approximation. \emph{AAAI}, 2024.
+\bibitem{leverage} C.~Musco and R.~T.~Witter. Provably accurate Shapley value
+estimation via leverage score sampling. \emph{ICLR}, 2025.
+\bibitem{burgess} M.~Burgess and A.~Chapman. Approximating Shapley values via
+stratified empirical Bernstein bounds. \emph{IJCAI}, 2021.
+\bibitem{contextcite} B.~Cohen-Wang et al. ContextCite: attributing model
+generation to context. \emph{NeurIPS}, 2024.
+\bibitem{procut} ProCut: pruning production prompt templates by segment
+attribution. 2025.
+\bibitem{cluster} Cluster Shapley: efficient document valuation for LLM
+summaries with error bounds. 2025.
+\bibitem{banzhaf} J.~T.~Wang and R.~Jia. Data Banzhaf: a robust data valuation
+framework. \emph{AISTATS}, 2023.
+\bibitem{owen} L.~S.~Shapley and G.~Owen. Values of games with a priori unions.
+1977.
+\bibitem{tokenshap} TokenSHAP: interpreting LLMs with Monte-Carlo Shapley values.
+2024.
+\bibitem{attribot} AttriBoT: efficient context attribution. \emph{ICLR}, 2025.
+\end{thebibliography}
+}
+\end{document}
