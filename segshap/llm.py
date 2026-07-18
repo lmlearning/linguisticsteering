@@ -73,7 +73,20 @@ class TokenUsage:
         return self.prompt_tokens - self.cached_tokens
 
 
-_UTILITY_MEMOS: dict = {}  # cache_dir -> {cache_key: utility}
+_UTILITY_MEMOS: dict = {}  # (cache_dir, utility_tag) -> {cache_key: utility}
+
+
+class CacheMiss(RuntimeError):
+    """Raised in offline mode when an evaluation is not already on disk."""
+
+
+class _OfflineClient:
+    """A client stand-in that makes any live API access fail loudly."""
+
+    def __getattr__(self, _name):  # pragma: no cover - defensive
+        raise CacheMiss(
+            "offline mode: a live API call was attempted but is forbidden"
+        )
 
 
 class PromptSegmentGame(NoisyGame):
@@ -104,6 +117,7 @@ class PromptSegmentGame(NoisyGame):
         max_tokens: Optional[int] = None,
         extra_body: Optional[dict] = None,
         max_retries: int = 4,
+        offline: bool = False,
         rng=None,
         budget: Optional[int] = None,
     ):
@@ -125,20 +139,26 @@ class PromptSegmentGame(NoisyGame):
             self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.usage = TokenUsage()
         self.total_cost = 0.0  # accumulated provider-reported spend (USD)
+        self.offline = offline
+        self.live_calls = 0  # count of actual API calls made (must be 0 offline)
         # At temperature 0 the (coalition, question) -> utility map is
         # deterministic, so replayed runs can skip disk entirely. The memo is
-        # shared across instances pointing at the same cache directory (cache
-        # keys already encode model/temperature), so repeated estimator runs
-        # over a primed grid replay from memory.
+        # shared across instances pointing at the same cache dir AND utility
+        # (rescoring the same responses with a different utility must not read
+        # stale memo entries), so repeated estimator runs replay from memory.
         if self.cache_dir is not None:
-            self._utility_memo = _UTILITY_MEMOS.setdefault(str(self.cache_dir), {})
+            memo_key = (str(self.cache_dir), getattr(self.utility, "__name__", repr(self.utility)))
+            self._utility_memo = _UTILITY_MEMOS.setdefault(memo_key, {})
         else:
             self._utility_memo = {}
-        if client is None:
+        if offline:
+            self.client = _OfflineClient()
+        elif client is None:
             from openai import AsyncOpenAI
 
-            client = AsyncOpenAI()
-        self.client = client
+            self.client = AsyncOpenAI()
+        else:
+            self.client = client
 
     @classmethod
     def openrouter(
@@ -147,20 +167,27 @@ class PromptSegmentGame(NoisyGame):
         api_key: Optional[str] = None,
         provider_order: Optional[Sequence[str]] = None,
         reasoning_enabled: bool = False,
+        offline: bool = False,
         **kwargs,
     ) -> "PromptSegmentGame":
         """Construct against OpenRouter with sane experiment defaults:
         reasoning disabled (current open-weights defaults think otherwise and
         multiply output cost), per-call cost reporting, and optional provider
-        preference for cache/quantization consistency."""
-        import os
+        preference for cache/quantization consistency.
 
-        from openai import AsyncOpenAI
+        ``offline=True`` builds a cache-only game: no client is created, no API
+        key is read, and any cache miss raises ``CacheMiss``."""
+        if offline:
+            client = None  # constructor installs the offline stand-in
+        else:
+            import os
 
-        client = AsyncOpenAI(
-            base_url="https://openrouter.ai/api/v1",
-            api_key=api_key or os.environ["OPENROUTER_API_KEY"],
-        )
+            from openai import AsyncOpenAI
+
+            client = AsyncOpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=api_key or os.environ["OPENROUTER_API_KEY"],
+            )
         extra_body: dict = {
             "reasoning": {"enabled": reasoning_enabled},
             "usage": {"include": True},
@@ -171,7 +198,7 @@ class PromptSegmentGame(NoisyGame):
                 "allow_fallbacks": True,
             }
         kwargs.setdefault("extra_body", extra_body)
-        return cls(*args, client=client, **kwargs)
+        return cls(*args, client=client, offline=offline, **kwargs)
 
     def _cache_key(self, coalition: Coalition, q_idx: int, rep: int) -> str:
         payload = json.dumps(
@@ -193,6 +220,7 @@ class PromptSegmentGame(NoisyGame):
                         kwargs["max_tokens"] = self.max_tokens
                     if self.extra_body is not None:
                         kwargs["extra_body"] = self.extra_body
+                    self.live_calls += 1
                     response = await self.client.chat.completions.create(
                         model=self.model,
                         messages=[{"role": "user", "content": prompt}],
@@ -236,6 +264,13 @@ class PromptSegmentGame(NoisyGame):
         unique: dict[str, tuple[str, int]] = {}
         for prompt, q_idx, key in jobs:
             unique.setdefault(key, (prompt, q_idx))
+
+        if self.offline and unique:
+            examples = list(unique.keys())[:3]
+            raise CacheMiss(
+                f"offline mode: {len(unique)} uncached evaluation(s); "
+                f"refusing to call the API. Example missing keys: {examples}"
+            )
 
         out: dict[str, str] = {}
         items = list(unique.items())

@@ -159,6 +159,40 @@ def test_kendall_tau_metric():
     assert kendall_tau(np.array([1.0, 2.0, 3.0]), np.array([10.0, 20.0, 30.0])) == 1.0
 
 
+def test_perm_bet_covers_and_matches_truth():
+    from segshap.estimators.perm_bet import perm_bet
+
+    game = make_game(noise="none")
+    truth = game.exact_shapley
+    res = perm_bet(game, budget_calls=8000, delta=0.05, rng=2)
+    assert linf_error(res.values, truth) < 0.03
+    assert ci_coverage(res.lower, res.upper, truth) == 1.0
+    assert np.all(res.lower >= -1.0) and np.all(res.upper <= 1.0)
+
+
+def test_perm_bet_noisy_ci_covers():
+    from segshap.estimators.perm_bet import perm_bet
+
+    failures = 0
+    for seed in range(10):
+        game = make_game(noise="gauss", sigma=0.1, seed=seed)
+        truth = game.exact_shapley
+        res = perm_bet(game, budget_calls=6000, replicates=2, delta=0.05, rng=seed)
+        if ci_coverage(res.lower, res.upper, truth) < 1.0:
+            failures += 1
+    assert failures <= 1
+
+
+def test_perm_bet_call_accounting_matches_permutation_mc():
+    from segshap.estimators.perm_bet import perm_bet
+
+    g1 = make_game(noise="gauss", sigma=0.05, seed=3)
+    g2 = make_game(noise="gauss", sigma=0.05, seed=3)
+    r1 = perm_bet(g1, budget_calls=5000, replicates=3, rng=0)
+    r2 = permutation_mc(g2, budget_calls=5000, replicates=3, rng=0)
+    assert r1.calls == r2.calls  # identical chain accounting
+
+
 def test_external_baselines_match_truth():
     from segshap.estimators.external import leverage_shap, svarm_shapley
 
