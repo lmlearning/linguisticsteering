@@ -1,0 +1,26 @@
+{
+ "checkpoint_d05": {
+  "trials": 1000,
+  "trial_failures": 0,
+  "checks": 5000,
+  "check_failures": 0,
+  "delta": 0.05,
+  "wilson_upper_trial": 0.003826898586390522
+ },
+ "checkpoint_d10": {
+  "trials": 300,
+  "trial_failures": 0,
+  "checks": 1500,
+  "check_failures": 0,
+  "delta": 0.1,
+  "wilson_upper_trial": 0.012643429997735661
+ },
+ "fixed_n12": {
+  "trials": 1000,
+  "failures": 0,
+  "delta": 0.05,
+  "n": 12,
+  "budget": 8000,
+  "wilson_upper": 0.003826898586390522
+ }
+}
