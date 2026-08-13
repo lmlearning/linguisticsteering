@@ -183,6 +183,33 @@ def test_perm_bet_noisy_ci_covers():
     assert failures <= 1
 
 
+def test_perm_bet_eb_covers():
+    from segshap.estimators.perm_bet import perm_bet
+
+    game = make_game(noise="gauss", sigma=0.05, seed=4)
+    truth = game.exact_shapley
+    res = perm_bet(game, budget_calls=6000, ci_method="eb", delta=0.05, rng=4)
+    assert ci_coverage(res.lower, res.upper, truth) == 1.0
+    assert np.all(res.lower >= -1.0) and np.all(res.upper <= 1.0)
+
+
+def test_intervention_gate_blocks_and_approves():
+    from segshap.estimators.gate import intervention_gate
+
+    # Unanimity: removing everything has a large true effect -> blocked.
+    uni = SyntheticMobiusGame(6, {frozenset(range(6)): 0.9}, noise="bernoulli",
+                              offset=0.05, rng=0)
+    g = intervention_gate(uni, remove=range(6), budget_calls=1500, tau_delta=0.1,
+                          delta=0.05, rng=1)
+    assert not g.approved and g.lower <= 0.9 <= g.upper
+    # Null players: removing dummies has zero effect -> approved.
+    add = SyntheticMobiusGame(6, {frozenset({0}): 0.9}, noise="bernoulli",
+                              offset=0.05, rng=0)
+    g2 = intervention_gate(add, remove=range(1, 6), budget_calls=1500, tau_delta=0.1,
+                           delta=0.05, rng=2)
+    assert g2.approved and g2.lower <= 0.0 <= g2.upper
+
+
 def test_perm_bet_call_accounting_matches_permutation_mc():
     from segshap.estimators.perm_bet import perm_bet
 

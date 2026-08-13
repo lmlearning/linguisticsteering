@@ -22,7 +22,7 @@ from typing import Optional
 
 import numpy as np
 
-from segshap.bounds import betting_interval
+from segshap.bounds import betting_interval, eb_halfwidth
 from segshap.estimators.cc_bernstein import ShapleyResult
 from segshap.games import BudgetExceeded, NoisyGame
 
@@ -32,9 +32,16 @@ def perm_bet(
     budget_calls: int,
     replicates: int = 1,
     delta: float = 0.05,
+    ci_method: str = "betting",
     rng: Optional[np.random.Generator | int] = None,
 ) -> ShapleyResult:
-    """Permutation-sampling Shapley with simultaneous betting certificates."""
+    """Permutation-sampling Shapley with simultaneous certificates.
+
+    ``ci_method="betting"`` (default) uses per-player hedged betting sequences;
+    ``"eb"`` uses the time-uniform empirical-Bernstein comparator on the same
+    marginal-contribution samples (for the decomposition x interval ablation).
+    Both are simultaneous over players at level delta via a union bound.
+    """
     n = game.n
     rng = rng if isinstance(rng, np.random.Generator) else np.random.default_rng(rng)
     samples: list[list[float]] = [[] for _ in range(n)]
@@ -59,7 +66,13 @@ def perm_bet(
     lower = np.full(n, -1.0)
     upper = np.full(n, 1.0)
     for i in range(n):
-        lo, hi = betting_interval(samples[i], -1.0, 1.0, delta_player)
+        if ci_method == "betting":
+            lo, hi = betting_interval(samples[i], -1.0, 1.0, delta_player)
+        else:  # empirical-Bernstein comparator on the same samples
+            xs = np.asarray(samples[i], dtype=float)
+            var = float(np.var(xs, ddof=1)) if xs.size >= 2 else np.inf
+            hw = eb_halfwidth(xs.size, var, 2.0, delta_player)
+            lo, hi = values[i] - hw, values[i] + hw
         lower[i] = max(-1.0, lo)
         upper[i] = min(1.0, hi)
 

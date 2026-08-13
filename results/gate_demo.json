@@ -1,0 +1,27 @@
+{
+ "delta": 0.05,
+ "tau": 0.15,
+ "tau_delta": 0.1,
+ "cases": {
+  "unanimity": {
+   "singleton_shapley": 0.09,
+   "screen_marks_all": true,
+   "delta_true": 0.9,
+   "gate_ci": [
+    0.8400000000000001,
+    0.9449999999999998
+   ],
+   "gate_approved": false,
+   "gate_calls": 1000
+  },
+  "planted_null": {
+   "delta_true": 0.0,
+   "gate_ci": [
+    -0.04999999999999993,
+    0.04499999999999993
+   ],
+   "gate_approved": true,
+   "gate_calls": 1000
+  }
+ }
+}
